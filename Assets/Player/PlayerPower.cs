@@ -1,18 +1,21 @@
 using UnityEngine;
 
-public class PlayerPower : MonoBehaviour
+namespace Player
 {
-    // Start is called before the first frame update
-    private Transform ForceLocal;
-
-    private void Start()
+    public class PlayerPower : MonoBehaviour
     {
-        ForceLocal = transform.GetChild(1);
-    }
+        // Start is called before the first frame update
+        private Transform ForceLocal;
 
-    // Update is called once per frame
-    private void Update()
-    {
-        if (Input.GetKey("w")) transform.position = ForceLocal.position;
+        private void Start()
+        {
+            ForceLocal = transform.GetChild(1);
+        }
+
+        // Update is called once per frame
+        private void Update()
+        {
+            if (Input.GetKey("w")) transform.position = ForceLocal.position;
+        }
     }
 }
