@@ -4,37 +4,37 @@ namespace Player
 {
     public class PlayerPower : MonoBehaviour
     {
+        public PlayerData playerData;
+        private Collider2D _collider2D;
         private Vector2 _direction;
         private Transform _forceLocal;
+        private Vector2 _gravityDirection;
         private bool _isGround;
         private float _powerTime;
+        private RaycastHit2D _raycastHit2D;
         private Rigidbody2D _rigidbody2D;
+
         private float baseTime;
         private float force;
+
 
         private void Start()
         {
             _forceLocal = transform.GetChild(1);
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            _collider2D = GetComponent<Collider2D>();
             force = 100;
             baseTime = 10;
             _isGround = false;
+            _gravityDirection = Vector2.down;
         }
 
         private void Update()
         {
             CheckJumpInput();
             StopCheck();
-        }
-
-        private void StopCheck()
-        {
-            if (_isGround)
-            {
-                Vector2 velocity = _rigidbody2D.velocity;
-                velocity.x = 0;
-                _rigidbody2D.velocity = velocity;
-            }
+            CheckCollision();
+            AddGravity();
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -44,6 +44,36 @@ namespace Player
             else
                 _isGround = false;
         }
+
+        private void AddGravity()
+        {
+            _rigidbody2D.AddForce(_gravityDirection * playerData.gravity);
+        }
+
+        private void CheckCollision()
+        {
+            CheckCollisionDown();
+        }
+
+
+        private void CheckCollisionDown()
+        {
+            _raycastHit2D = Physics2D.Raycast(transform.position, Vector2.down,
+                _collider2D.bounds.extents.y, // playerData.hitDistance,
+                1 << LayerMask.NameToLayer("map"));
+            if (_raycastHit2D.collider) Debug.Log("ground touch");
+        }
+
+        private void StopCheck()
+        {
+            if (_isGround)
+            {
+                var velocity = _rigidbody2D.velocity;
+                velocity.x = 0;
+                _rigidbody2D.velocity = velocity;
+            }
+        }
+
 
         private void CheckJumpInput()
         {

@@ -1,8 +1,24 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Data", menuName = "data/player", order = 1)]
-public class PlayerData : ScriptableObject
+namespace Player
 {
-    public float angleMax;
-    public float angleMin;
+    public struct CharaSize
+    {
+        public float Up;
+        public float Down;
+        public float Left;
+        public float Right;
+    }
+
+    [CreateAssetMenu(fileName = "Data", menuName = "data/player", order = 1)]
+    public class PlayerData : ScriptableObject
+    {
+        public float angleMax;
+        public float angleMin;
+
+        public float gravity;
+
+        public float hitDistance;
+        // public CharaSize CharaSize;
+    }
 }
