@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb6e1492f974a0fb1c072c755eb862a, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  angleMax: 180
-  angleMin: -90
+  angleMax: 0
+  angleMin: -180
   gravity: 25
-  hitDistance: 2
+  hitDistance: 0.05
+  collideWallSpeedDelta: 0.8
+  baseSpeed: 20

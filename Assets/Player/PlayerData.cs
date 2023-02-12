@@ -19,6 +19,10 @@ namespace Player
         public float gravity;
 
         public float hitDistance;
+
+        public float collideWallSpeedDelta;
+
+        public float baseSpeed;
         // public CharaSize CharaSize;
     }
 }

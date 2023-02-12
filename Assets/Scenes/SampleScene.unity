@@ -186,13 +186,13 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &184982840
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -488,6 +488,22 @@ CompositeCollider2D:
         Y: -31999998
       - X: -25600000
         Y: -31999998
+    - - X: 64000000
+        Y: -12800000
+      - X: 38400000
+        Y: -12800000
+      - X: 38400000
+        Y: -19200000
+      - X: 64000000
+        Y: -19200000
+    - - X: 95999992
+        Y: -32000000
+      - X: 89600000
+        Y: -32000000
+      - X: 89600000
+        Y: -51200000
+      - X: 95999992
+        Y: -51200000
     - - X: 38399996
         Y: -44799996
       - X: -25600000
@@ -499,14 +515,6 @@ CompositeCollider2D:
       - X: -31999998
         Y: -51200000
       - X: 38399996
-        Y: -51200000
-    - - X: 95999992
-        Y: -32000000
-      - X: 89600000
-        Y: -32000000
-      - X: 89600000
-        Y: -51200000
-      - X: 95999992
         Y: -51200000
     - - X: 89599992
         Y: -44799996
@@ -526,6 +534,10 @@ CompositeCollider2D:
       - {x: -2.56, y: -4.4799705}
       - {x: -2.5599706, y: 4.48}
       - {x: 8.96, y: 4.4799705}
+    - - {x: 6.399971, y: -1.9200001}
+      - {x: 6.399971, y: -1.28}
+      - {x: 3.8400002, y: -1.2800293}
+      - {x: 3.8400292, y: -1.9200001}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
 --- !u!50 &1505357568
@@ -611,6 +623,10 @@ PrefabInstance:
     - target: {fileID: 4766125660986064636, guid: a0448876db32370f79b1e71b974724f3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6910487843946605642, guid: a0448876db32370f79b1e71b974724f3, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6910487843946605642, guid: a0448876db32370f79b1e71b974724f3, type: 3}
       propertyPath: m_TagString
