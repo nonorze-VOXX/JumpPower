@@ -2,6 +2,12 @@ using UnityEngine;
 
 namespace Player
 {
+    internal enum Wall
+    {
+        Left = -1,
+        Right = 1
+    }
+
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
@@ -54,8 +60,8 @@ namespace Player
         private void CheckCollision()
         {
             CheckCollisionDown();
-            CheckCollisionWall(-1);
-            CheckCollisionWall(1);
+            CheckCollisionWall((float)Wall.Left);
+            CheckCollisionWall((float)Wall.Right);
         }
 
 
