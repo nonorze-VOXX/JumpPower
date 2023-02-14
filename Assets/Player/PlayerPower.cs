@@ -1,4 +1,3 @@
-using Player.Camera;
 using UnityEngine;
 
 namespace Player
@@ -15,8 +14,6 @@ namespace Player
     //TODO picture test
     public class PlayerPower : MonoBehaviour
     {
-        public GameObject camera;
-        public CameraData cameraData;
         public PlayerData playerData;
         private Collider2D _collider2D;
         private Vector2 _direction;
@@ -43,9 +40,6 @@ namespace Player
 
         private void Update()
         {
-            // camera.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
-            if (Input.GetKey("n")) cameraData.nowCameraLocal += 1;
-
             CheckJumpInput();
             StopCheck();
             CheckCollision();
@@ -82,12 +76,7 @@ namespace Player
                 1 << LayerMask.NameToLayer("map"));
             Debug.DrawRay(transform.position, Vector2.right * (direction *
                 _collider2D.bounds.extents.x + playerData.hitDistance), Color.green);
-            if (_raycastHit2D.collider)
-            {
-                Debug.Log(_raycastHit2D.transform.name);
-                Debug.Log("wall touch");
-                CollideWall(direction);
-            }
+            if (_raycastHit2D.collider) CollideWall(direction);
         }
 
         private void CollideWall(float direction)
@@ -107,8 +96,6 @@ namespace Player
                 1 << LayerMask.NameToLayer("map"));
             if (_raycastHit2DDown.collider)
             {
-                Debug.Log("ground touch");
-                Debug.Log(_raycastHit2DDown.transform.name);
             }
         }
 

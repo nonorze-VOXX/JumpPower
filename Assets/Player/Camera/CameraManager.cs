@@ -8,8 +8,7 @@ namespace Player.Camera
 
         private void Update()
         {
-            var newLocal = data.cameraLocalList[data.nowCameraLocal];
-            transform.position = new Vector3(newLocal.x, newLocal.y, -10);
+            transform.position = data.cameraPosition;
         }
     }
 }

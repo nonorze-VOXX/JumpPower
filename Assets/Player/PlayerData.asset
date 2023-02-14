@@ -17,4 +17,4 @@ MonoBehaviour:
   gravity: 25
   hitDistance: 0.05
   collideWallSpeedDelta: 0.8
-  baseSpeed: 20
+  baseSpeed: 10
