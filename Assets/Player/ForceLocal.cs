@@ -8,6 +8,7 @@ public class ForceLocal : MonoBehaviour
     [SerializeField] private float angleSpeed;
     public PlayerData playerData;
     private Transform _containerTransform;
+    private bool _freeAngle;
 
     // Start is called before the first frame update
     private void Start()
@@ -26,8 +27,20 @@ public class ForceLocal : MonoBehaviour
 
     private void ChangeAngle()
     {
-        if (Input.GetKey("a") && angle < playerData.angleMax) angle += angleSpeed;
-        if (Input.GetKey("d") && angle > playerData.angleMin) angle -= angleSpeed;
+        if (Input.GetKey(KeyCode.LeftShift)) _freeAngle = !_freeAngle;
+
+        if (_freeAngle)
+        {
+            if (Input.GetKey("a") && angle < playerData.angleMax) angle += angleSpeed;
+            if (Input.GetKey("d") && angle > playerData.angleMin) angle -= angleSpeed;
+        }
+        else
+        {
+            if (Input.GetKey("a")) angle = -60;
+            else if (Input.GetKey("d")) angle = -120;
+            else
+                angle = -90;
+        }
     }
 
     private void UpdatePosition()

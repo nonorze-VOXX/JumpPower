@@ -1,3 +1,4 @@
+using Player.Camera;
 using UnityEngine;
 
 namespace Player
@@ -8,8 +9,14 @@ namespace Player
         Right = 1
     }
 
+    //TODO camera comtrol 
+    //TODO gravity control
+    //TODO goal detect
+    //TODO picture test
     public class PlayerPower : MonoBehaviour
     {
+        public GameObject camera;
+        public CameraData cameraData;
         public PlayerData playerData;
         private Collider2D _collider2D;
         private Vector2 _direction;
@@ -36,6 +43,9 @@ namespace Player
 
         private void Update()
         {
+            // camera.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+            if (Input.GetKey("n")) cameraData.nowCameraLocal += 1;
+
             CheckJumpInput();
             StopCheck();
             CheckCollision();
