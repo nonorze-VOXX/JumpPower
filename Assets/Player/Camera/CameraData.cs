@@ -8,8 +8,6 @@ namespace Player.Camera
     {
         public Vector2 cameraLocalSpace;
         public List<Vector2> cameraLocalList;
-        public int nowCameraLocal;
-        public float switchWidth;
         public Vector3 cameraPosition;
     }
 }

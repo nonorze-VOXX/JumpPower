@@ -8,8 +8,7 @@ namespace Player
         Right = 1
     }
 
-    //TODO camera comtrol 
-    //TODO gravity control
+    //TODO switch gravity player control
     //TODO goal detect
     //TODO picture test
     public class PlayerPower : MonoBehaviour
@@ -18,7 +17,6 @@ namespace Player
         private Collider2D _collider2D;
         private Vector2 _direction;
         private Transform _forceLocal;
-        private Vector2 _gravityDirection;
         private bool _isGround;
         private float _powerTime;
         private RaycastHit2D _raycastHit2D;
@@ -35,7 +33,7 @@ namespace Player
             _collider2D = GetComponent<Collider2D>();
             force = 1;
             _isGround = false;
-            _gravityDirection = Vector2.down;
+            playerData.gravityDirection = Vector2.down;
         }
 
         private void Update()
@@ -58,7 +56,7 @@ namespace Player
 
         private void AddGravity()
         {
-            _rigidbody2D.AddForce(_gravityDirection * playerData.gravity);
+            _rigidbody2D.AddForce(playerData.gravityDirection * playerData.gravity);
         }
 
         private void CheckCollision()

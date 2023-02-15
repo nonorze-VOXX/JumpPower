@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 1faf5b5846ee4d39bf2538b444da9d2c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - gravitySwitch: {fileID: 8017786790958890180, guid: cc8034bffacac963d9e54e9aae3ce045, type: 3}
+  - data: {fileID: 11400000, guid: 78deb4bfc3c04da4d84b149b4cd8b91b, type: 2}
+  - mapData: {fileID: 11400000, guid: cd76216afe0b19fc581cdb5f9980bc52, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

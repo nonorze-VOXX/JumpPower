@@ -2,14 +2,6 @@ using UnityEngine;
 
 namespace Player
 {
-    public struct CharaSize
-    {
-        public float Up;
-        public float Down;
-        public float Left;
-        public float Right;
-    }
-
     [CreateAssetMenu(fileName = "Data", menuName = "data/player", order = 1)]
     public class PlayerData : ScriptableObject
     {
@@ -23,6 +15,7 @@ namespace Player
         public float collideWallSpeedDelta;
 
         public float baseSpeed;
-        // public CharaSize CharaSize;
+
+        public Vector2 gravityDirection;
     }
 }
