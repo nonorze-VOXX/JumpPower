@@ -8,7 +8,7 @@ namespace Player
         Right = 1
     }
 
-    //TODO switch gravity player control
+    //TODO player rotation when gravity change
     //TODO goal detect
     //TODO picture test
     public class PlayerPower : MonoBehaviour
@@ -62,28 +62,59 @@ namespace Player
         private void CheckCollision()
         {
             CheckCollisionDown();
-            CheckCollisionWall((float)Wall.Left);
-            CheckCollisionWall((float)Wall.Right);
+
+            CheckCollisionWall(playerData.gravityDirection, (float)Wall.Left);
+            CheckCollisionWall(playerData.gravityDirection, (float)Wall.Right);
         }
 
 
-        private void CheckCollisionWall(float direction)
+        private void CheckCollisionWall(Vector2 mode, float direction)
         {
-            _raycastHit2D = Physics2D.Raycast(transform.position, Vector2.right * direction,
-                _collider2D.bounds.extents.x + playerData.hitDistance,
-                1 << LayerMask.NameToLayer("map"));
-            Debug.DrawRay(transform.position, Vector2.right * (direction *
-                _collider2D.bounds.extents.x + playerData.hitDistance), Color.green);
-            if (_raycastHit2D.collider) CollideWall(direction);
+            var detectDirection = TransGravityToCollisionDirection(mode);
+            var position = transform.position;
+            if (detectDirection.Equals(Vector2.right))
+                _raycastHit2D = Physics2D.Raycast(position, detectDirection * direction,
+                    _collider2D.bounds.extents.x + playerData.hitDistance,
+                    1 << LayerMask.NameToLayer("map"));
+            else
+                _raycastHit2D = Physics2D.Raycast(position, detectDirection * direction,
+                    _collider2D.bounds.extents.y + playerData.hitDistance,
+                    1 << LayerMask.NameToLayer("map"));
+
+            // Debug.DrawRay(transform.position, detectDirection * (direction *
+            //     _collider2D.bounds.extents.x + playerData.hitDistance), Color.green);
+            if (_raycastHit2D.collider) CollideWall(detectDirection, direction);
         }
 
-        private void CollideWall(float direction)
+        private Vector2 TransGravityToCollisionDirection(Vector2 mode)
+        {
+            if (mode == Vector2.down)
+                return Vector2.right;
+            if (mode == Vector2.right)
+                return Vector2.up;
+            if (mode == Vector2.up)
+                return Vector2.right;
+            return mode == Vector2.left ? Vector2.up : Vector2.down;
+        }
+
+        private void CollideWall(Vector2 mode, float direction)
         {
             var speed = _rigidbody2D.velocity;
-            if (speed.x * direction > 0)
+            if (mode == Vector2.right)
             {
-                speed.x *= -playerData.collideWallSpeedDelta;
-                _rigidbody2D.velocity = speed;
+                if (speed.x * direction > 0)
+                {
+                    speed.x *= -playerData.collideWallSpeedDelta;
+                    _rigidbody2D.velocity = speed;
+                }
+            }
+            else
+            {
+                if (speed.y * direction > 0)
+                {
+                    speed.y *= -playerData.collideWallSpeedDelta;
+                    _rigidbody2D.velocity = speed;
+                }
             }
         }
 

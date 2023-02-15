@@ -17,5 +17,8 @@ namespace Player
         public float baseSpeed;
 
         public Vector2 gravityDirection;
+        public float angleLockA;
+        public float angleLockD;
+        public float angleLockNull;
     }
 }

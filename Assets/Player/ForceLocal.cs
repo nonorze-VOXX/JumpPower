@@ -9,21 +9,64 @@ public class ForceLocal : MonoBehaviour
     public PlayerData playerData;
     private Transform _containerTransform;
     private bool _freeAngle;
+    private float _nowGravityAngleLockA;
+    private float _nowGravityAngleLockD;
+    private float _nowGravityAngleLockNull;
 
-    // Start is called before the first frame update
     private void Start()
     {
         angle = 0f;
         angleSpeed = 10f;
         _containerTransform = transform.parent;
+        playerData.angleLockA = _nowGravityAngleLockA = -60;
+        playerData.angleLockD = _nowGravityAngleLockD = -120;
+        playerData.angleLockNull = _nowGravityAngleLockNull = -90;
     }
 
-    // Update is called once per frame
     private void Update()
     {
         UpdatePosition();
+        CheckAngle();
         ChangeAngle();
     }
+
+    private void CheckAngle()
+    {
+        if (playerData.gravityDirection.Equals(Vector2.down) &&
+            !_nowGravityAngleLockNull.Equals(playerData.angleLockNull))
+        {
+            _nowGravityAngleLockA = playerData.angleLockA;
+            _nowGravityAngleLockD = playerData.angleLockD;
+            _nowGravityAngleLockNull = playerData.angleLockNull;
+        }
+        else if (playerData.gravityDirection.Equals(Vector2.right) &&
+                 !_nowGravityAngleLockNull.Equals(Spin90Angle(playerData.angleLockNull)))
+        {
+            _nowGravityAngleLockA = Spin90Angle(playerData.angleLockA);
+            _nowGravityAngleLockD = Spin90Angle(playerData.angleLockD);
+            _nowGravityAngleLockNull = Spin90Angle(playerData.angleLockNull);
+        }
+        else if (playerData.gravityDirection.Equals(Vector2.up) &&
+                 !_nowGravityAngleLockNull.Equals(Spin90Angle(Spin90Angle(playerData.angleLockNull))))
+        {
+            _nowGravityAngleLockA = Spin90Angle(Spin90Angle(playerData.angleLockA));
+            _nowGravityAngleLockD = Spin90Angle(Spin90Angle(playerData.angleLockD));
+            _nowGravityAngleLockNull = Spin90Angle(Spin90Angle(playerData.angleLockNull));
+        }
+        else if (playerData.gravityDirection.Equals(Vector2.left) &&
+                 !_nowGravityAngleLockNull.Equals(Spin90Angle(Spin90Angle(Spin90Angle(playerData.angleLockNull)))))
+        {
+            _nowGravityAngleLockA = Spin90Angle(Spin90Angle(Spin90Angle(playerData.angleLockA)));
+            _nowGravityAngleLockD = Spin90Angle(Spin90Angle(Spin90Angle(playerData.angleLockD)));
+            _nowGravityAngleLockNull = Spin90Angle(Spin90Angle(Spin90Angle(playerData.angleLockNull)));
+        }
+    }
+
+    private float Spin90Angle(float beforeAngle)
+    {
+        return beforeAngle + 90;
+    }
+
 
     private void ChangeAngle()
     {
@@ -36,10 +79,12 @@ public class ForceLocal : MonoBehaviour
         }
         else
         {
-            if (Input.GetKey("a")) angle = -60;
-            else if (Input.GetKey("d")) angle = -120;
+            if (Input.GetKey("a"))
+                angle = _nowGravityAngleLockA;
+            else if (Input.GetKey("d"))
+                angle = _nowGravityAngleLockD;
             else
-                angle = -90;
+                angle = _nowGravityAngleLockNull;
         }
     }
 
