@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9182e5b101a040b49c736ef2d1a144f8, type: 3}
+  m_Name: cameraData
+  m_EditorClassIdentifier: 
+  cameraLocalSpace: {x: 10.21, y: 10.21}
+  cameraLocalList:
+  - {x: 5.105, y: 5.105}
+  - {x: 15.315001, y: 5.105}
+  - {x: 25.525, y: 5.105}
+  - {x: 35.735, y: 5.105}
+  - {x: 45.945, y: 5.105}
+  - {x: 5.105, y: 15.315001}
+  - {x: 15.315001, y: 15.315001}
+  - {x: 25.525, y: 15.315001}
+  - {x: 35.735, y: 15.315001}
+  - {x: 45.945, y: 15.315001}
+  - {x: 5.105, y: 25.525}
+  - {x: 15.315001, y: 25.525}
+  - {x: 25.525, y: 25.525}
+  - {x: 35.735, y: 25.525}
+  - {x: 45.945, y: 25.525}
+  - {x: 5.105, y: 35.735}
+  - {x: 15.315001, y: 35.735}
+  - {x: 25.525, y: 35.735}
+  - {x: 35.735, y: 35.735}
+  - {x: 45.945, y: 35.735}
+  - {x: 5.105, y: 45.945}
+  - {x: 15.315001, y: 45.945}
+  - {x: 25.525, y: 45.945}
+  - {x: 35.735, y: 45.945}
+  - {x: 45.945, y: 45.945}
+  nowCameraLocal: 13
+  switchWidth: 0.2

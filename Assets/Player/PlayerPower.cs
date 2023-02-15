@@ -8,6 +8,10 @@ namespace Player
         Right = 1
     }
 
+    //TODO camera comtrol 
+    //TODO gravity control
+    //TODO goal detect
+    //TODO picture test
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
@@ -72,12 +76,7 @@ namespace Player
                 1 << LayerMask.NameToLayer("map"));
             Debug.DrawRay(transform.position, Vector2.right * (direction *
                 _collider2D.bounds.extents.x + playerData.hitDistance), Color.green);
-            if (_raycastHit2D.collider)
-            {
-                Debug.Log(_raycastHit2D.transform.name);
-                Debug.Log("wall touch");
-                CollideWall(direction);
-            }
+            if (_raycastHit2D.collider) CollideWall(direction);
         }
 
         private void CollideWall(float direction)
@@ -97,8 +96,6 @@ namespace Player
                 1 << LayerMask.NameToLayer("map"));
             if (_raycastHit2DDown.collider)
             {
-                Debug.Log("ground touch");
-                Debug.Log(_raycastHit2DDown.transform.name);
             }
         }
 
