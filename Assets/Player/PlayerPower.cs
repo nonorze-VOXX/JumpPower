@@ -8,7 +8,6 @@ namespace Player
         Right = 1
     }
 
-    //TODO player rotation when gravity change
     //TODO goal detect
     //TODO picture test
     public class PlayerPower : MonoBehaviour
