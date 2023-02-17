@@ -61,60 +61,46 @@ namespace Player
         private void CheckCollision()
         {
             CheckCollisionDown();
-
-            CheckCollisionWall(playerData.gravityDirection, (float)Wall.Left);
-            CheckCollisionWall(playerData.gravityDirection, (float)Wall.Right);
+            CollideWall(playerData.gravityDirection);
         }
 
 
-        private void CheckCollisionWall(Vector2 mode, float direction)
+        private bool CheckCollisionWall(Vector2 wallDirection)
         {
-            var detectDirection = TransGravityToCollisionDirection(mode);
-            var position = transform.position;
-            if (detectDirection.Equals(Vector2.right))
-                _raycastHit2D = Physics2D.Raycast(position, detectDirection * direction,
-                    _collider2D.bounds.extents.x + playerData.hitDistance,
-                    1 << LayerMask.NameToLayer("map"));
-            else
-                _raycastHit2D = Physics2D.Raycast(position, detectDirection * direction,
-                    _collider2D.bounds.extents.y + playerData.hitDistance,
-                    1 << LayerMask.NameToLayer("map"));
+            Vector2 position = transform.position;
+            float boundsExtents = wallDirection.x != 0 ?
+                _collider2D.bounds.extents.x : _collider2D.bounds.extents.y;
+            float hitDistance = boundsExtents + playerData.hitDistance;
 
-            // Debug.DrawRay(transform.position, detectDirection * (direction *
-            //     _collider2D.bounds.extents.x + playerData.hitDistance), Color.green);
-            if (_raycastHit2D.collider) CollideWall(detectDirection, direction);
+            _raycastHit2D = Physics2D.Raycast(position, wallDirection, hitDistance,
+                1 << LayerMask.NameToLayer("map"));
+
+            // Debug.DrawRay(position, wallDirection * hitDistance, Color.green);
+            return _raycastHit2D.collider;
         }
 
-        private Vector2 TransGravityToCollisionDirection(Vector2 mode)
+        private Vector2 anticlockwise90deg(Vector2 v)
         {
-            if (mode == Vector2.down)
-                return Vector2.right;
-            if (mode == Vector2.right)
-                return Vector2.up;
-            if (mode == Vector2.up)
-                return Vector2.right;
-            return mode == Vector2.left ? Vector2.up : Vector2.down;
+            return new Vector2(-v.y, v.x);
+        }
+        
+        private Vector2 GetCollideWallDirection(Vector2 groundDirection)
+        {
+            Vector2 rightWall = anticlockwise90deg(groundDirection);
+            Vector2 leftWall = rightWall * -1.0f;
+            if(CheckCollisionWall(rightWall)) return rightWall;
+            if(CheckCollisionWall(leftWall)) return leftWall;
+            return Vector2.zero;
         }
 
-        private void CollideWall(Vector2 mode, float direction)
+        private void CollideWall(Vector2 groundDirection)
         {
-            var speed = _rigidbody2D.velocity;
-            if (mode == Vector2.right)
-            {
-                if (speed.x * direction > 0)
-                {
-                    speed.x *= -playerData.collideWallSpeedDelta;
-                    _rigidbody2D.velocity = speed;
-                }
-            }
-            else
-            {
-                if (speed.y * direction > 0)
-                {
-                    speed.y *= -playerData.collideWallSpeedDelta;
-                    _rigidbody2D.velocity = speed;
-                }
-            }
+            Vector2 speed = _rigidbody2D.velocity;
+            Vector2 collisionDirection = GetCollideWallDirection(groundDirection);
+            if (collisionDirection == Vector2.zero) return; // didn't collide the wall
+
+            if (Vector2.Dot(speed, collisionDirection) > 0)
+                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection * -1.0f);
         }
 
         private void CheckCollisionDown()
