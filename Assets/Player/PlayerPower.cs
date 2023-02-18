@@ -9,12 +9,10 @@ namespace Player
     }
 
     //TODO goal detect
-    //TODO picture test
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
 
-        [SerializeField] private float _powerTime;
 
         private bool _aWaJumped;
         private Collider2D _collider2D;
@@ -28,6 +26,7 @@ namespace Player
 
         private void Start()
         {
+            playerData.powerTime = 0;
             _forceLocal = transform.GetChild(1);
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _collider2D = GetComponent<Collider2D>();
@@ -38,8 +37,7 @@ namespace Player
 
         private void Update()
         {
-            Debug.Log(_status);
-            CheckJumpInput();
+            CheckMoveInput();
             CheckCollision();
             AddGravity();
             CheckStatus();
@@ -79,6 +77,7 @@ namespace Player
             return _raycastHit2D.collider;
         }
 
+
         private Vector2 Anticlockwise90deg(Vector2 v)
         {
             return new Vector2(-v.y, v.x);
@@ -100,7 +99,7 @@ namespace Player
             if (collisionDirection == Vector2.zero) return; // didn't collide the wall
 
             if (Vector2.Dot(speed, collisionDirection) > 0)
-                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection * -1.0f);
+                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection * -0.8f);
         }
 
         private void CheckCollisionDown()
@@ -115,45 +114,51 @@ namespace Player
         }
 
 
-        private void CheckJumpInput()
+        private void CheckMoveInput()
         {
-            if (!Input.GetKey("w"))
-                _aWaJumped = false;
-            if (Input.GetKey("w") && _status == Status.Idle)
+            if (Input.GetKey(KeyCode.LeftControl))
             {
-                if (_aWaJumped)
-                {
-                    Debug.Log("WTF");
-                }
-                else
-                {
-                    _direction = transform.position - _forceLocal.position;
-                    _powerTime += Time.deltaTime;
-                    if (_powerTime > 1.5) Jump();
-                }
+                //normal move
+                if (Input.GetKey(KeyCode.A)) _rigidbody2D.velocity = new Vector2(-1f, 0);
+                else if (Input.GetKey(KeyCode.D)) _rigidbody2D.velocity = new Vector2(1f, 0);
+                else _rigidbody2D.velocity = Vector2.zero;
             }
-            else if (!Input.GetKey("w") && _status == Status.Idle)
+            else
             {
-                if (_powerTime < 0.3 && _powerTime > 0)
+                if (!Input.GetKey("w"))
+                    _aWaJumped = false;
+                if (Input.GetKey("w") && _status == Status.Idle)
                 {
-                    _powerTime = 0;
-                    Jump();
+                    if (!_aWaJumped)
+                    {
+                        _direction = transform.position - _forceLocal.position;
+                        playerData.powerTime += Time.deltaTime;
+                        if (playerData.powerTime > 1.5) Jump();
+                    }
                 }
-                else
+                else if (!Input.GetKey("w") && _status == Status.Idle)
                 {
-                    if (_powerTime != 0) Jump();
-                }
+                    if (playerData.powerTime < 0.3 && playerData.powerTime > 0)
+                    {
+                        playerData.powerTime = 0;
+                        Jump();
+                    }
+                    else
+                    {
+                        if (playerData.powerTime != 0) Jump();
+                    }
 
-                _powerTime = 0;
+                    playerData.powerTime = 0;
+                }
             }
         }
 
         private void Jump()
         {
             var speed = _rigidbody2D.velocity;
-            speed = _direction * (_powerTime * playerData.timeForce + playerData.baseSpeed);
+            speed = _direction * (playerData.powerTime * playerData.timeForce + playerData.baseSpeed);
             _rigidbody2D.velocity = speed;
-            _powerTime = 0;
+            playerData.powerTime = 0;
             _aWaJumped = true;
         }
     }
