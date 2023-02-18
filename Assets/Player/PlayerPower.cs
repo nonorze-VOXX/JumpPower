@@ -22,15 +22,12 @@ namespace Player
         private RaycastHit2D _raycastHit2DDown;
         private Rigidbody2D _rigidbody2D;
 
-        private float force;
-
 
         private void Start()
         {
             _forceLocal = transform.GetChild(1);
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _collider2D = GetComponent<Collider2D>();
-            force = 1;
             _isGround = false;
             playerData.gravityDirection = Vector2.down;
         }
@@ -68,9 +65,8 @@ namespace Player
         private bool CheckCollisionWall(Vector2 wallDirection)
         {
             Vector2 position = transform.position;
-            float boundsExtents = wallDirection.x != 0 ?
-                _collider2D.bounds.extents.x : _collider2D.bounds.extents.y;
-            float hitDistance = boundsExtents + playerData.hitDistance;
+            var boundsExtents = wallDirection.x != 0 ? _collider2D.bounds.extents.x : _collider2D.bounds.extents.y;
+            var hitDistance = boundsExtents + playerData.hitDistance;
 
             _raycastHit2D = Physics2D.Raycast(position, wallDirection, hitDistance,
                 1 << LayerMask.NameToLayer("map"));
@@ -79,24 +75,24 @@ namespace Player
             return _raycastHit2D.collider;
         }
 
-        private Vector2 anticlockwise90deg(Vector2 v)
+        private Vector2 Anticlockwise90deg(Vector2 v)
         {
             return new Vector2(-v.y, v.x);
         }
-        
+
         private Vector2 GetCollideWallDirection(Vector2 groundDirection)
         {
-            Vector2 rightWall = anticlockwise90deg(groundDirection);
-            Vector2 leftWall = rightWall * -1.0f;
-            if(CheckCollisionWall(rightWall)) return rightWall;
-            if(CheckCollisionWall(leftWall)) return leftWall;
+            var rightWall = Anticlockwise90deg(groundDirection);
+            var leftWall = rightWall * -1.0f;
+            if (CheckCollisionWall(rightWall)) return rightWall;
+            if (CheckCollisionWall(leftWall)) return leftWall;
             return Vector2.zero;
         }
 
         private void CollideWall(Vector2 groundDirection)
         {
-            Vector2 speed = _rigidbody2D.velocity;
-            Vector2 collisionDirection = GetCollideWallDirection(groundDirection);
+            var speed = _rigidbody2D.velocity;
+            var collisionDirection = GetCollideWallDirection(groundDirection);
             if (collisionDirection == Vector2.zero) return; // didn't collide the wall
 
             if (Vector2.Dot(speed, collisionDirection) > 0)
@@ -130,18 +126,29 @@ namespace Player
             {
                 _direction = transform.position - _forceLocal.position;
                 _powerTime += Time.deltaTime;
+                if (_powerTime > 1.5) Jump();
             }
             else
             {
-                if (_powerTime != 0)
+                if (_powerTime < 0.3 && _powerTime > 0)
                 {
-                    var speed = _rigidbody2D.velocity;
-                    speed = _direction * ((_powerTime + playerData.baseSpeed) * force);
-                    _rigidbody2D.velocity = speed;
+                    _powerTime = 0;
+                    Jump();
+                }
+                else
+                {
+                    if (_powerTime != 0) Jump();
                 }
 
                 _powerTime = 0;
             }
+        }
+
+        private void Jump()
+        {
+            var speed = _rigidbody2D.velocity;
+            speed = _direction * (_powerTime * playerData.timeForce + playerData.baseSpeed);
+            _rigidbody2D.velocity = speed;
         }
     }
 }
