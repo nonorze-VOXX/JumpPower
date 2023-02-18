@@ -2,10 +2,10 @@ using UnityEngine;
 
 namespace Player
 {
-    internal enum Wall
+    internal enum Status
     {
-        Left = -1,
-        Right = 1
+        Idle,
+        Jumping
     }
 
     //TODO goal detect
@@ -13,14 +13,17 @@ namespace Player
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
+
+        [SerializeField] private float _powerTime;
+
+        private bool _aWaJumped;
         private Collider2D _collider2D;
         private Vector2 _direction;
         private Transform _forceLocal;
-        private bool _isGround;
-        private float _powerTime;
         private RaycastHit2D _raycastHit2D;
         private RaycastHit2D _raycastHit2DDown;
         private Rigidbody2D _rigidbody2D;
+        private Status _status;
 
 
         private void Start()
@@ -28,27 +31,28 @@ namespace Player
             _forceLocal = transform.GetChild(1);
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _collider2D = GetComponent<Collider2D>();
-            _isGround = false;
+            _status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
+            _aWaJumped = true;
         }
 
         private void Update()
         {
+            Debug.Log(_status);
             CheckJumpInput();
-            StopCheck();
             CheckCollision();
             AddGravity();
+            CheckStatus();
         }
 
-        private void OnCollisionEnter2D(Collision2D collision)
+        private void CheckStatus()
         {
-            Debug.Log(collision.transform.name);
-            Debug.Log(collision.transform.position);
-            if (collision.transform.tag.Equals("ground"))
-                _isGround = true;
+            if (_rigidbody2D.velocity != Vector2.zero)
+                _status = Status.Jumping;
             else
-                _isGround = false;
+                _status = Status.Idle;
         }
+
 
         private void AddGravity()
         {
@@ -57,7 +61,7 @@ namespace Player
 
         private void CheckCollision()
         {
-            CheckCollisionDown();
+            // CheckCollisionDown();
             CollideWall(playerData.gravityDirection);
         }
 
@@ -101,34 +105,34 @@ namespace Player
 
         private void CheckCollisionDown()
         {
-            _raycastHit2DDown = Physics2D.Raycast(transform.position, Vector2.down,
-                _collider2D.bounds.extents.y,
+            _raycastHit2DDown = Physics2D.Raycast(transform.position, playerData.gravityDirection,
+                _collider2D.bounds.extents.y + playerData.hitDownDistance,
                 1 << LayerMask.NameToLayer("map"));
             if (_raycastHit2DDown.collider)
-            {
-            }
-        }
-
-        private void StopCheck()
-        {
-            if (_isGround)
-            {
-                var velocity = _rigidbody2D.velocity;
-                velocity.x = 0;
-                _rigidbody2D.velocity = velocity;
-            }
+                _status = Status.Idle;
+            else
+                _status = Status.Jumping;
         }
 
 
         private void CheckJumpInput()
         {
-            if (Input.GetKey("w"))
+            if (!Input.GetKey("w"))
+                _aWaJumped = false;
+            if (Input.GetKey("w") && _status == Status.Idle)
             {
-                _direction = transform.position - _forceLocal.position;
-                _powerTime += Time.deltaTime;
-                if (_powerTime > 1.5) Jump();
+                if (_aWaJumped)
+                {
+                    Debug.Log("WTF");
+                }
+                else
+                {
+                    _direction = transform.position - _forceLocal.position;
+                    _powerTime += Time.deltaTime;
+                    if (_powerTime > 1.5) Jump();
+                }
             }
-            else
+            else if (!Input.GetKey("w") && _status == Status.Idle)
             {
                 if (_powerTime < 0.3 && _powerTime > 0)
                 {
@@ -149,6 +153,8 @@ namespace Player
             var speed = _rigidbody2D.velocity;
             speed = _direction * (_powerTime * playerData.timeForce + playerData.baseSpeed);
             _rigidbody2D.velocity = speed;
+            _powerTime = 0;
+            _aWaJumped = true;
         }
     }
 }

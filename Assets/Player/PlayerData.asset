@@ -16,5 +16,11 @@ MonoBehaviour:
   angleMin: -180
   gravity: 25
   hitDistance: 0.05
+  hitDownDistance: 0.05
   collideWallSpeedDelta: 0.8
   baseSpeed: 10
+  gravityDirection: {x: 0, y: -1}
+  angleLockA: -60
+  angleLockD: -120
+  angleLockNull: -90
+  timeForce: 5

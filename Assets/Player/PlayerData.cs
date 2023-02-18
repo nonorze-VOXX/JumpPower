@@ -11,6 +11,7 @@ namespace Player
         public float gravity;
 
         public float hitDistance;
+        public float hitDownDistance;
 
         public float collideWallSpeedDelta;
 
