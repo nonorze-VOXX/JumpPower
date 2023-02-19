@@ -11,6 +11,7 @@ namespace Player
         public float gravity;
 
         public float hitDistance;
+        public float hitDownDistance;
 
         public float collideWallSpeedDelta;
 
@@ -21,5 +22,6 @@ namespace Player
         public float angleLockD;
         public float angleLockNull;
         public float timeForce;
+        public float powerTime;
     }
 }
