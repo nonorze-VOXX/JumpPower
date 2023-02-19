@@ -20,5 +20,6 @@ namespace Player
         public float angleLockA;
         public float angleLockD;
         public float angleLockNull;
+        public float timeForce;
     }
 }
