@@ -24,3 +24,4 @@ MonoBehaviour:
   angleLockD: -120
   angleLockNull: -90
   timeForce: 5
+  powerTime: 0
