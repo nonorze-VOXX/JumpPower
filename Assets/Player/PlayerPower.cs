@@ -9,6 +9,8 @@ namespace Player
     }
 
     //TODO goal detect
+    //TODO falling max speed
+    //TODO jump speed remake
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
