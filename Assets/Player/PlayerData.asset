@@ -23,7 +23,7 @@ MonoBehaviour:
   angleLockA: -60
   angleLockD: -120
   angleLockNull: -90
-  timeForce: 5
+  timeForce: 4
   powerTime: 0
   angle: -90
   nowGravityAngleLockA: -60

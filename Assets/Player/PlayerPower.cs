@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Player
@@ -57,9 +56,7 @@ namespace Player
 
         private void AddGravity()
         {
-            //TODO make gravity direction speed limit max speed
-            if (Math.Abs(_rigidbody2D.velocity.x) < playerData.maxSpeed ||
-                (Math.Abs(_rigidbody2D.velocity.x) < playerData.maxSpeed && _status != Status.Idle))
+            if (Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) < playerData.maxSpeed)
                 _rigidbody2D.AddForce(playerData.gravityDirection * playerData.gravity);
         }
 
