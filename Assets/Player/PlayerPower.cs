@@ -58,8 +58,8 @@ namespace Player
         private void AddGravity()
         {
             //TODO make gravity direction speed limit max speed
-            if (Math.Abs(_rigidbody2D.velocity.x) < playerData.maxSpeed ||
-                (Math.Abs(_rigidbody2D.velocity.x) < playerData.maxSpeed && _status != Status.Idle))
+            if (Math.Abs(Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection)) < playerData.maxSpeed
+                && _status != Status.Idle)
                 _rigidbody2D.AddForce(playerData.gravityDirection * playerData.gravity);
         }
 
@@ -114,7 +114,8 @@ namespace Player
             if (Input.GetKey(KeyCode.LeftControl) && _status == Status.Idle)
             {
                 //normal move
-                if (Input.GetKey(KeyCode.A)) _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
+                if (Input.GetKey(KeyCode.A))
+                    _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
                 else if (Input.GetKey(KeyCode.D))
                     _rigidbody2D.velocity = Anticlockwise90deg(playerData.gravityDirection);
                 else _rigidbody2D.velocity = Vector2.zero;
