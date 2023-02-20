@@ -57,9 +57,10 @@ namespace Player
 
         private void AddGravity()
         {
-            var gravityForce = playerData.gravityDirection * playerData.gravity;
-            if (Vector2.Dot(_rigidbody2D.velocity, gravityForce) < playerData.maxSpeed)
-                _rigidbody2D.AddForce(gravityForce);
+            //TODO make gravity direction speed limit max speed
+            if (Math.Abs(_rigidbody2D.velocity.x) < playerData.maxSpeed ||
+                (Math.Abs(_rigidbody2D.velocity.x) < playerData.maxSpeed && _status != Status.Idle))
+                _rigidbody2D.AddForce(playerData.gravityDirection * playerData.gravity);
         }
 
         private void CheckCollision()
@@ -104,7 +105,7 @@ namespace Player
             if (collisionDirection == Vector2.zero) return; // didn't collide the wall
 
             if (Vector2.Dot(speed, collisionDirection) > 0)
-                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection) * 0.8f;
+                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection * -0.8f);
         }
 
 
@@ -113,8 +114,7 @@ namespace Player
             if (Input.GetKey(KeyCode.LeftControl) && _status == Status.Idle)
             {
                 //normal move
-                if (Input.GetKey(KeyCode.A))
-                    _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
+                if (Input.GetKey(KeyCode.A)) _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
                 else if (Input.GetKey(KeyCode.D))
                     _rigidbody2D.velocity = Anticlockwise90deg(playerData.gravityDirection);
                 else _rigidbody2D.velocity = Vector2.zero;
