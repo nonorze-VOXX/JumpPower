@@ -148,6 +148,7 @@ namespace Player
 
         private void Jump()
         {
+            Debug.Log(playerData.powerTime);
             //new jump
             var xSpeed = Vector2.zero;
             if (playerData.angle < playerData.nowGravityAngleLockNull)
