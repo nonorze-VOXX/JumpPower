@@ -23,5 +23,10 @@ namespace Player
         public float angleLockNull;
         public float timeForce;
         public float powerTime;
+        public float angle;
+        public float nowGravityAngleLockA;
+        public float nowGravityAngleLockD;
+        public float nowGravityAngleLockNull;
+        public float maxSpeed;
     }
 }

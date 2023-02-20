@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Player
@@ -10,7 +11,6 @@ namespace Player
 
     //TODO goal detect
     //TODO falling max speed
-    //TODO jump speed remake
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
@@ -43,6 +43,7 @@ namespace Player
             CheckCollision();
             AddGravity();
             CheckStatus();
+            // Stop();
         }
 
         private void CheckStatus()
@@ -56,7 +57,10 @@ namespace Player
 
         private void AddGravity()
         {
-            _rigidbody2D.AddForce(playerData.gravityDirection * playerData.gravity);
+            //TODO make gravity direction speed limit max speed
+            if (Math.Abs(_rigidbody2D.velocity.x) < playerData.maxSpeed ||
+                (Math.Abs(_rigidbody2D.velocity.x) < playerData.maxSpeed && _status != Status.Idle))
+                _rigidbody2D.AddForce(playerData.gravityDirection * playerData.gravity);
         }
 
         private void CheckCollision()
@@ -104,25 +108,15 @@ namespace Player
                 _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection * -0.8f);
         }
 
-        private void CheckCollisionDown()
-        {
-            _raycastHit2DDown = Physics2D.Raycast(transform.position, playerData.gravityDirection,
-                _collider2D.bounds.extents.y + playerData.hitDownDistance,
-                1 << LayerMask.NameToLayer("map"));
-            if (_raycastHit2DDown.collider)
-                _status = Status.Idle;
-            else
-                _status = Status.Jumping;
-        }
-
 
         private void CheckMoveInput()
         {
-            if (Input.GetKey(KeyCode.LeftControl))
+            if (Input.GetKey(KeyCode.LeftControl) && _status == Status.Idle)
             {
                 //normal move
-                if (Input.GetKey(KeyCode.A)) _rigidbody2D.velocity = new Vector2(-1f, 0);
-                else if (Input.GetKey(KeyCode.D)) _rigidbody2D.velocity = new Vector2(1f, 0);
+                if (Input.GetKey(KeyCode.A)) _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
+                else if (Input.GetKey(KeyCode.D))
+                    _rigidbody2D.velocity = Anticlockwise90deg(playerData.gravityDirection);
                 else _rigidbody2D.velocity = Vector2.zero;
             }
             else
@@ -157,11 +151,43 @@ namespace Player
 
         private void Jump()
         {
-            var speed = _rigidbody2D.velocity;
-            speed = _direction * (playerData.powerTime * playerData.timeForce + playerData.baseSpeed);
+            //new jump
+            var xSpeed = Vector2.zero;
+            if (playerData.angle < playerData.nowGravityAngleLockNull)
+                xSpeed = 5 * Anticlockwise90deg(playerData.gravityDirection);
+            else if (playerData.angle > playerData.nowGravityAngleLockNull)
+                xSpeed = -5 * Anticlockwise90deg(playerData.gravityDirection);
+
+            var speed = -playerData.gravityDirection *
+                        (playerData.baseSpeed + playerData.powerTime * playerData.timeForce) +
+                        xSpeed;
             _rigidbody2D.velocity = speed;
+
+            //old junp
+            // var speed = _rigidbody2D.velocity;
+            // speed = _direction * (playerData.powerTime * playerData.timeForce + playerData.baseSpeed);
+            // _rigidbody2D.velocity = speed;
             playerData.powerTime = 0;
             _aWaJumped = true;
+        }
+
+        private void Stop()
+        {
+            if (CheckCollisionDown() && _status == Status.Jumping)
+            {
+                _rigidbody2D.velocity = Vector2.zero;
+                _status = Status.Idle;
+            }
+        }
+
+        private bool CheckCollisionDown()
+        {
+            _raycastHit2DDown = Physics2D.Raycast(transform.position, playerData.gravityDirection,
+                _collider2D.bounds.extents.y + playerData.hitDownDistance,
+                1 << LayerMask.NameToLayer("map"));
+            if (_raycastHit2DDown.collider)
+                return true;
+            return false;
         }
     }
 }

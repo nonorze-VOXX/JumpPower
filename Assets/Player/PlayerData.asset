@@ -25,3 +25,8 @@ MonoBehaviour:
   angleLockNull: -90
   timeForce: 5
   powerTime: 0
+  angle: -90
+  nowGravityAngleLockA: -60
+  nowGravityAngleLockD: -120
+  nowGravityAngleLockNull: -90
+  maxSpeed: 14
