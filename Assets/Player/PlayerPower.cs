@@ -9,7 +9,6 @@ namespace Player
     }
 
     //TODO goal detect
-    //TODO falling max speed
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
@@ -27,12 +26,14 @@ namespace Player
 
         private void Start()
         {
+            transform.position = playerData.playerSafedPosition;
             playerData.powerTime = 0;
             _forceLocal = transform.GetChild(1);
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _collider2D = GetComponent<Collider2D>();
             _status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
+            playerData.maxPowerTime = 1.5f;
             _aWaJumped = true;
         }
 
@@ -57,7 +58,8 @@ namespace Player
         private void AddGravity()
         {
             if (Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) < playerData.maxSpeed)
-                _rigidbody2D.AddForce(playerData.gravityDirection * playerData.gravity);
+                //gravity *deltaTime *timeFix
+                _rigidbody2D.AddForce(playerData.gravityDirection * (playerData.gravity * Time.deltaTime * 57));
         }
 
         private void CheckCollision()
@@ -102,7 +104,7 @@ namespace Player
             if (collisionDirection == Vector2.zero) return; // didn't collide the wall
 
             if (Vector2.Dot(speed, collisionDirection) > 0)
-                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection * -0.8f);
+                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection * -playerData.collideWallSpeedDelta);
         }
 
 
@@ -148,23 +150,33 @@ namespace Player
 
         private void Jump()
         {
-            Debug.Log(playerData.powerTime);
-            //new jump
-            var xSpeed = Vector2.zero;
-            if (playerData.angle < playerData.nowGravityAngleLockNull)
-                xSpeed = 5 * Anticlockwise90deg(playerData.gravityDirection);
-            else if (playerData.angle > playerData.nowGravityAngleLockNull)
-                xSpeed = -5 * Anticlockwise90deg(playerData.gravityDirection);
+            if (playerData.freeAngle)
+            {
+                //old junp
+                var speed = _rigidbody2D.velocity;
+                speed = _direction * (playerData.powerTime * playerData.timeForce + playerData.baseSpeed);
+                _rigidbody2D.velocity = speed;
+            }
+            else
+            {
+                var jumpPowerTime = playerData.powerTime;
+                //new jump
+                var xSpeed = Vector2.zero;
+                if (playerData.angle < playerData.nowGravityAngleLockNull)
+                    xSpeed = 5 * Anticlockwise90deg(playerData.gravityDirection);
+                else if (playerData.angle > playerData.nowGravityAngleLockNull)
+                    xSpeed = -5 * Anticlockwise90deg(playerData.gravityDirection);
+                if (playerData.powerTime > playerData.maxPowerTime) jumpPowerTime = playerData.maxPowerTime;
 
-            var speed = -playerData.gravityDirection *
-                        (playerData.baseSpeed + playerData.powerTime * playerData.timeForce) +
-                        xSpeed;
-            _rigidbody2D.velocity = speed;
+                var speed = -playerData.gravityDirection *
+                            (playerData.baseSpeed + jumpPowerTime * playerData.timeForce) +
+                            xSpeed;
+                _rigidbody2D.velocity = speed;
 
-            //old junp
-            // var speed = _rigidbody2D.velocity;
-            // speed = _direction * (playerData.powerTime * playerData.timeForce + playerData.baseSpeed);
-            // _rigidbody2D.velocity = speed;
+                Debug.Log(jumpPowerTime);
+                Debug.Log(_rigidbody2D.velocity);
+            }
+
             playerData.powerTime = 0;
             _aWaJumped = true;
         }

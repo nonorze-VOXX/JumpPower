@@ -1,18 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LineRendeeer : MonoBehaviour
 
 {
-        public  LineRenderer line;
+    public LineRenderer line;
 
-        public int count;
+    public int count;
 
-        public float timer;
-        public List<Vector3> points;
+    public float timer;
+
+    [SerializeField] public List<Vector3> points;
+
+    private Vector3 _nowPosition;
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         count = 0;
         timer = 0;
@@ -21,21 +24,33 @@ public class LineRendeeer : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        GetInput();
         timer += Time.deltaTime;
         if (timer > 0.02)
         {
-        AddPoints();
-        timer = 0;
+            if (_nowPosition != transform.position || points.Count == 0) AddPoints();
+
+            _nowPosition = transform.position;
+            timer = 0;
         }
-        
     }
 
     private void AddPoints()
     {
         points.Add(transform.position);
         line.SetPositions(points.ToArray());
-        line.positionCount += 1;
+        line.positionCount = points.Count;
+        line.SetPosition(line.positionCount - 1, transform.position);
+    }
+
+    private void GetInput()
+    {
+        if (Input.GetKey(KeyCode.Delete))
+        {
+            Debug.Log("DELETE!");
+            points.Clear();
+        }
     }
 }
