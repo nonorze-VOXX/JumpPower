@@ -28,6 +28,12 @@ public class ForceLocal : MonoBehaviour
         UpdatePosition();
         CheckAngle();
         ChangeAngle();
+        PowerTimeSize();
+    }
+
+    private void PowerTimeSize()
+    {
+        transform.localScale = new Vector3(1, 1, 1) * playerData.powerTime / 2;
     }
 
 
