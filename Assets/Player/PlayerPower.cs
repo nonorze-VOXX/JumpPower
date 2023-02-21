@@ -50,6 +50,7 @@ namespace Player
 
         private void Update()
         {
+            Debug.Log(playerData.status);
             SavePoint();
             CheckMoveInput();
             CheckCollision();
@@ -150,9 +151,9 @@ namespace Player
             }
             else
             {
-                if (!Input.GetKey("w"))
+                if (!GetJumpInput())
                     _aWaJumped = false;
-                if (Input.GetKey("w") && playerData.status == Status.Idle)
+                if (GetJumpInput() && playerData.status == Status.Idle)
                 {
                     if (!_aWaJumped)
                     {
@@ -161,7 +162,7 @@ namespace Player
                         if (playerData.powerTime > 1.5) Jump();
                     }
                 }
-                else if (!Input.GetKey("w") && playerData.status == Status.Idle)
+                else if (!GetJumpInput() && playerData.status == Status.Idle)
                 {
                     if (playerData.powerTime < 0.3 && playerData.powerTime > 0)
                     {
@@ -178,6 +179,11 @@ namespace Player
             }
         }
 
+        private bool GetJumpInput()
+        {
+            return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space);
+        }
+
         private void Jump()
         {
             if (playerData.freeAngle)
@@ -186,8 +192,6 @@ namespace Player
                 _direction = transform.position - _forceLocal.position;
                 var speed = _rigidbody2D.velocity;
                 speed = _direction * (playerData.powerTime * playerData.timeForce + playerData.baseSpeed);
-                //max 16 min 10
-                //max 16 min 5
                 _rigidbody2D.velocity = speed;
             }
             else
@@ -205,6 +209,7 @@ namespace Player
                             (playerData.baseSpeed + jumpPowerTime * playerData.timeForce) +
                             xSpeed;
                 _rigidbody2D.velocity = speed;
+                Debug.Log(speed);
             }
 
             playerData.powerTime = 0;
