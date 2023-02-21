@@ -33,7 +33,7 @@ public class ForceLocal : MonoBehaviour
 
     private void PowerTimeSize()
     {
-        transform.localScale = new Vector3(1, 1, 1) * playerData.powerTime / 2;
+        transform.localScale = new Vector3(1, 1, 1) * ((playerData.powerTime + 0.6f) / 2);
     }
 
 

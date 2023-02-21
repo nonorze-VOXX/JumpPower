@@ -2,17 +2,11 @@ using UnityEngine;
 
 namespace Player
 {
-    internal enum Status
-    {
-        Idle,
-        Jumping
-    }
-
     //TODO goal detect
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
-
+        public GameObject tpFlag;
 
         private bool _aWaJumped;
         private Collider2D _collider2D;
@@ -21,24 +15,42 @@ namespace Player
         private RaycastHit2D _raycastHit2D;
         private RaycastHit2D _raycastHit2DDown;
         private Rigidbody2D _rigidbody2D;
-        private Status _status;
+        private float _saveCounter;
+        private Vector2 tpLocation;
 
 
         private void Start()
         {
-            transform.position = playerData.playerSafedPosition;
+            tpLocation = Vector2.zero;
+            _saveCounter = 0;
             playerData.powerTime = 0;
             _forceLocal = transform.GetChild(1);
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _collider2D = GetComponent<Collider2D>();
-            _status = Status.Jumping;
+            playerData.status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
             playerData.maxPowerTime = 1.5f;
             _aWaJumped = true;
+            if (PlayerPrefs.GetFloat("savePointX") == 0)
+            {
+                //no played
+                PlayerPrefs.SetInt("haveTP", 0);
+                PlayerPrefs.SetFloat("savePointX", playerData.playerSafedPosition.x);
+                PlayerPrefs.SetFloat("savePointY", playerData.playerSafedPosition.y);
+                PlayerPrefs.Save();
+                transform.position = playerData.playerSafedPosition;
+            }
+            else
+            {
+                //played
+                var position = new Vector2(PlayerPrefs.GetFloat("savePointX"), PlayerPrefs.GetFloat("savePointY"));
+                transform.position = position;
+            }
         }
 
         private void Update()
         {
+            SavePoint();
             CheckMoveInput();
             CheckCollision();
             AddGravity();
@@ -46,12 +58,27 @@ namespace Player
             // Stop();
         }
 
+
+        private void SavePoint()
+        {
+            _saveCounter += Time.deltaTime;
+            Debug.Log("savedX :" + PlayerPrefs.GetFloat("savePointX"));
+            if (playerData.status == Status.Idle && _saveCounter > 1)
+            {
+                var position = transform.position;
+                PlayerPrefs.SetFloat("savePointX", position.x);
+                PlayerPrefs.SetFloat("savePointY", position.y);
+                PlayerPrefs.Save();
+                _saveCounter = 0;
+            }
+        }
+
         private void CheckStatus()
         {
             if (_rigidbody2D.velocity != Vector2.zero)
-                _status = Status.Jumping;
+                playerData.status = Status.Jumping;
             else
-                _status = Status.Idle;
+                playerData.status = Status.Idle;
         }
 
 
@@ -110,7 +137,10 @@ namespace Player
 
         private void CheckMoveInput()
         {
-            if (Input.GetKey(KeyCode.LeftControl) && _status == Status.Idle)
+            if (Input.GetKey(KeyCode.T) && playerData.status == Status.Idle)
+                SaveTp();
+            else if (Input.GetKey(KeyCode.P) && playerData.status == Status.Idle) Tp();
+            if (Input.GetKey(KeyCode.LeftControl) && playerData.status == Status.Idle)
             {
                 //normal move
                 if (Input.GetKey(KeyCode.A)) _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
@@ -122,7 +152,7 @@ namespace Player
             {
                 if (!Input.GetKey("w"))
                     _aWaJumped = false;
-                if (Input.GetKey("w") && _status == Status.Idle)
+                if (Input.GetKey("w") && playerData.status == Status.Idle)
                 {
                     if (!_aWaJumped)
                     {
@@ -131,7 +161,7 @@ namespace Player
                         if (playerData.powerTime > 1.5) Jump();
                     }
                 }
-                else if (!Input.GetKey("w") && _status == Status.Idle)
+                else if (!Input.GetKey("w") && playerData.status == Status.Idle)
                 {
                     if (playerData.powerTime < 0.3 && playerData.powerTime > 0)
                     {
@@ -153,8 +183,11 @@ namespace Player
             if (playerData.freeAngle)
             {
                 //old junp
+                _direction = transform.position - _forceLocal.position;
                 var speed = _rigidbody2D.velocity;
                 speed = _direction * (playerData.powerTime * playerData.timeForce + playerData.baseSpeed);
+                //max 16 min 10
+                //max 16 min 5
                 _rigidbody2D.velocity = speed;
             }
             else
@@ -172,9 +205,6 @@ namespace Player
                             (playerData.baseSpeed + jumpPowerTime * playerData.timeForce) +
                             xSpeed;
                 _rigidbody2D.velocity = speed;
-
-                Debug.Log(jumpPowerTime);
-                Debug.Log(_rigidbody2D.velocity);
             }
 
             playerData.powerTime = 0;
@@ -183,10 +213,10 @@ namespace Player
 
         private void Stop()
         {
-            if (CheckCollisionDown() && _status == Status.Jumping)
+            if (CheckCollisionDown() && playerData.status == Status.Jumping)
             {
                 _rigidbody2D.velocity = Vector2.zero;
-                _status = Status.Idle;
+                playerData.status = Status.Idle;
             }
         }
 
@@ -198,6 +228,21 @@ namespace Player
             if (_raycastHit2DDown.collider)
                 return true;
             return false;
+        }
+
+        private void SaveTp()
+        {
+            if (PlayerPrefs.GetInt("haveTP") == 1)
+            {
+                var position = transform.position;
+                tpLocation = position;
+                tpFlag.transform.position = position;
+            }
+        }
+
+        private void Tp()
+        {
+            if (!tpLocation.Equals(Vector2.zero) && PlayerPrefs.GetInt("haveTP") == 1) transform.position = tpLocation;
         }
     }
 }
