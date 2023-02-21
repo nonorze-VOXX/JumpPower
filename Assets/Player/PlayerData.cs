@@ -5,6 +5,7 @@ namespace Player
     [CreateAssetMenu(fileName = "Data", menuName = "data/player", order = 1)]
     public class PlayerData : ScriptableObject
     {
+        public Vector2 playerSafedPosition;
         public float angleMax;
         public float angleMin;
 
@@ -28,5 +29,7 @@ namespace Player
         public float nowGravityAngleLockD;
         public float nowGravityAngleLockNull;
         public float maxSpeed;
+        public float maxPowerTime;
+        public bool freeAngle;
     }
 }

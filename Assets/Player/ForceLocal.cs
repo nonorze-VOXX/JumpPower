@@ -7,12 +7,12 @@ public class ForceLocal : MonoBehaviour
     [SerializeField] private float angleSpeed;
     public PlayerData playerData;
     private Transform _containerTransform;
-    private bool _freeAngle;
     private float _gravityAngleMax;
     private float _gravityAngleMin;
 
     private void Start()
     {
+        playerData.freeAngle = false;
         playerData.angle = 0f;
         angleSpeed = 10f;
         _containerTransform = transform.parent;
@@ -28,6 +28,12 @@ public class ForceLocal : MonoBehaviour
         UpdatePosition();
         CheckAngle();
         ChangeAngle();
+        PowerTimeSize();
+    }
+
+    private void PowerTimeSize()
+    {
+        transform.localScale = new Vector3(1, 1, 1) * playerData.powerTime / 2;
     }
 
 
@@ -84,9 +90,9 @@ public class ForceLocal : MonoBehaviour
 
     private void ChangeAngle()
     {
-        if (Input.GetKey(KeyCode.LeftShift)) _freeAngle = !_freeAngle;
+        if (Input.GetKey(KeyCode.LeftShift)) playerData.freeAngle = !playerData.freeAngle;
 
-        if (_freeAngle)
+        if (playerData.freeAngle)
         {
             if (Input.GetKey("a") && playerData.angle < _gravityAngleMax) playerData.angle += angleSpeed;
             if (Input.GetKey("d") && playerData.angle > _gravityAngleMin) playerData.angle -= angleSpeed;

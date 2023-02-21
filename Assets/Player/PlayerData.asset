@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb6e1492f974a0fb1c072c755eb862a, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
+  playerSafedPosition: {x: 5, y: 4}
   angleMax: 0
   angleMin: -180
   gravity: 25
@@ -19,14 +20,16 @@ MonoBehaviour:
   hitDownDistance: 0.05
   collideWallSpeedDelta: 0.8
   baseSpeed: 10
-  gravityDirection: {x: 0, y: -1}
+  gravityDirection: {x: 1, y: 0}
   angleLockA: -60
   angleLockD: -120
   angleLockNull: -90
   timeForce: 4
   powerTime: 0
-  angle: -90
-  nowGravityAngleLockA: -60
-  nowGravityAngleLockD: -120
-  nowGravityAngleLockNull: -90
+  angle: 0
+  nowGravityAngleLockA: 30
+  nowGravityAngleLockD: -30
+  nowGravityAngleLockNull: 0
   maxSpeed: 14
+  maxPowerTime: 1.5
+  freeAngle: 0
