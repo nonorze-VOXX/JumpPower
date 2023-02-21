@@ -2,6 +2,12 @@ using UnityEngine;
 
 namespace Player
 {
+    public enum Status
+    {
+        Idle,
+        Jumping
+    }
+
     [CreateAssetMenu(fileName = "Data", menuName = "data/player", order = 1)]
     public class PlayerData : ScriptableObject
     {
@@ -31,5 +37,6 @@ namespace Player
         public float maxSpeed;
         public float maxPowerTime;
         public bool freeAngle;
+        public Status status;
     }
 }
