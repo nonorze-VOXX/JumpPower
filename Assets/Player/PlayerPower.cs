@@ -31,6 +31,7 @@ namespace Player
             playerData.gravityDirection = Vector2.down;
             playerData.maxPowerTime = 1.5f;
             _aWaJumped = true;
+                PlayerPrefs.DeleteAll();
             if (PlayerPrefs.GetFloat("savePointX") == 0)
             {
                 //no played
