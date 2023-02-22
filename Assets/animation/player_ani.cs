@@ -29,27 +29,39 @@ public class player_ani : MonoBehaviour
                 playerSR.flipX = false;
         }
 
-        if (playerRig.velocity.y > 0 && playerAni.GetInteger("state") != 3)
+        if(playerData.status == Status.Jumping)
         {
-            playerAni.SetInteger("state", 3);
-        }
-        else if (playerRig.velocity.y < 0)
-        {
-            playerAni.SetInteger("state", 4);
-        }
-        else if (Input.GetKey(KeyCode.W))
-        {
-            playerAni.SetInteger("state", 2);
-        }
-        else if (Input.GetKey(KeyCode.LeftControl) && (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)))
-        {
-            Debug.Log(playerRig.velocity.x);
-            playerAni.SetInteger("state", 1);
+            if ((playerRig.velocity.y > 0.001 && playerData.gravityDirection.y == -1) || (playerRig.velocity.y < -0.001 && playerData.gravityDirection.y == 1) || (playerRig.velocity.x > 0.001 && playerData.gravityDirection.x == -1) || (playerRig.velocity.x < -0.001 && playerData.gravityDirection.x == 1))
+            {
+                playerAni.SetInteger("state", 3);
+            }
+            else if ((playerRig.velocity.y > 0.001 && playerData.gravityDirection.y == 1) || (playerRig.velocity.y < -0.001 && playerData.gravityDirection.y == -1) || (playerRig.velocity.x > 0.001 && playerData.gravityDirection.x == 1) || (playerRig.velocity.x < -0.001 && playerData.gravityDirection.x == -1))
+            {
+                playerAni.SetInteger("state", 4);
+            }
+
+            else if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)) && Input.GetKey(KeyCode.LeftControl))
+            {
+                playerAni.SetInteger("state", 1);
+            }
         }
         else
         {
-            playerAni.SetInteger("state", 0);
+            if (Input.GetKey(KeyCode.W))
+            {
+                playerAni.SetInteger("state", 2);
+            }
+            else if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)) && Input.GetKey(KeyCode.LeftControl))
+            {
+                playerAni.SetInteger("state", 1);
+            }
+            else
+            {
+                playerAni.SetInteger("state", 0);
+            }
         }
+        Debug.Log(playerData.gravityDirection.x);
+        
     }
 
 }

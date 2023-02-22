@@ -33,3 +33,4 @@ MonoBehaviour:
   maxSpeed: 14
   maxPowerTime: 1.5
   freeAngle: 0
+  status: 0
