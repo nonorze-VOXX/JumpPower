@@ -30,7 +30,6 @@ namespace Player
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
-            playerData.maxPowerTime = 1.5f;
             _aWaJumped = true;
             PlayerPrefs.DeleteAll();
             if (PlayerPrefs.GetFloat("savePointX") == 0)
@@ -169,7 +168,7 @@ namespace Player
                     {
                         _direction = transform.position - _forceLocal.position;
                         playerData.powerTime += Time.deltaTime;
-                        if (playerData.powerTime > 1.5) Jump();
+                        if (playerData.powerTime > playerData.maxPowerTime) Jump();
                     }
                 }
                 else if (!GetJumpInput() && playerData.status == Status.Idle)

@@ -13,24 +13,24 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: 
   playerSafedPosition: {x: 5, y: 4}
-  angleMax: 0
-  angleMin: -180
+  angleMax: -10
+  angleMin: -170
   gravity: 25
   hitDistance: 0.05
   hitDownDistance: 0.05
   collideWallSpeedDelta: 0.8
-  baseSpeed: 10
-  gravityDirection: {x: 0, y: 1}
+  baseSpeed: 6
+  gravityDirection: {x: 1, y: 0}
   angleLockA: -60
   angleLockD: -120
   angleLockNull: -90
-  timeForce: 4
+  timeForce: 8
   powerTime: 0
-  angle: 90
-  nowGravityAngleLockA: 120
-  nowGravityAngleLockD: 60
-  nowGravityAngleLockNull: 90
+  angle: 0
+  nowGravityAngleLockA: 30
+  nowGravityAngleLockD: -30
+  nowGravityAngleLockNull: 0
   maxSpeed: 14
-  maxPowerTime: 1.5
+  maxPowerTime: 1
   freeAngle: 0
   status: 0
