@@ -19,18 +19,18 @@ MonoBehaviour:
   hitDistance: 0.05
   hitDownDistance: 0.05
   collideWallSpeedDelta: 0.8
-  baseSpeed: 10
-  gravityDirection: {x: 0, y: 1}
+  baseSpeed: 3
+  gravityDirection: {x: -1, y: 0}
   angleLockA: -60
   angleLockD: -120
   angleLockNull: -90
-  timeForce: 4
+  timeForce: 13
   powerTime: 0
-  angle: 90
-  nowGravityAngleLockA: 120
-  nowGravityAngleLockD: 60
-  nowGravityAngleLockNull: 90
+  angle: 180
+  nowGravityAngleLockA: 210
+  nowGravityAngleLockD: 150
+  nowGravityAngleLockNull: 180
   maxSpeed: 14
-  maxPowerTime: 1.5
+  maxPowerTime: 1
   freeAngle: 0
   status: 0
