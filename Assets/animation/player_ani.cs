@@ -33,27 +33,27 @@ public class player_ani : MonoBehaviour
         {
             if ((playerRig.velocity.y > 0.001 && playerData.gravityDirection.y == -1) || (playerRig.velocity.y < -0.001 && playerData.gravityDirection.y == 1) || (playerRig.velocity.x > 0.001 && playerData.gravityDirection.x == -1) || (playerRig.velocity.x < -0.001 && playerData.gravityDirection.x == 1))
             {
-                playerAni.SetInteger("state", 3);
+                playerAni.SetInteger("state", 3);//UP
             }
             else if ((playerRig.velocity.y > 0.001 && playerData.gravityDirection.y == 1) || (playerRig.velocity.y < -0.001 && playerData.gravityDirection.y == -1) || (playerRig.velocity.x > 0.001 && playerData.gravityDirection.x == 1) || (playerRig.velocity.x < -0.001 && playerData.gravityDirection.x == -1))
             {
-                playerAni.SetInteger("state", 4);
+                playerAni.SetInteger("state", 4);//DOWN
             }
 
             else if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)) && Input.GetKey(KeyCode.LeftControl))
             {
-                playerAni.SetInteger("state", 1);
+                playerAni.SetInteger("state", 1);//WALK
             }
         }
         else
         {
             if (Input.GetKey(KeyCode.W))
             {
-                playerAni.SetInteger("state", 2);
+                playerAni.SetInteger("state", 2);//SQUAT
             }
             else if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)) && Input.GetKey(KeyCode.LeftControl))
             {
-                playerAni.SetInteger("state", 1);
+                playerAni.SetInteger("state", 1);//WALK
             }
             else
             {
