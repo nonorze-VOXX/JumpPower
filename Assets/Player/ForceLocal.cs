@@ -90,7 +90,7 @@ public class ForceLocal : MonoBehaviour
 
     private void ChangeAngle()
     {
-        if (Input.GetKey(KeyCode.LeftShift)) playerData.freeAngle = !playerData.freeAngle;
+        if (Input.GetKeyDown(KeyCode.LeftShift)) playerData.freeAngle = !playerData.freeAngle;
 
         if (playerData.freeAngle)
         {

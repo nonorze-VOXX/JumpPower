@@ -1,5 +1,4 @@
 using Player;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class player_ani : MonoBehaviour
@@ -7,61 +6,52 @@ public class player_ani : MonoBehaviour
     public PlayerData playerData;
     public SpriteRenderer playerSR;
     public Animator playerAni;
-    private Rigidbody2D playerRig;
     private bool isSquat;
+
+    private Rigidbody2D playerRig;
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         isSquat = false;
         playerRig = gameObject.transform.parent.gameObject.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (Input.GetKey(KeyCode.A)){
+        if (Input.GetKey(KeyCode.A))
             if (playerSR.flipX == false && playerData.status == Status.Idle)
                 playerSR.flipX = true;
-        }
         if (Input.GetKey(KeyCode.D))
-        {
-            if (playerSR.flipX == true && playerData.status == Status.Idle)
+            if (playerSR.flipX && playerData.status == Status.Idle)
                 playerSR.flipX = false;
-        }
 
-        if(playerData.status == Status.Jumping)
+        if (playerData.status == Status.Jumping)
         {
-            if ((playerRig.velocity.y > 0.001 && playerData.gravityDirection.y == -1) || (playerRig.velocity.y < -0.001 && playerData.gravityDirection.y == 1) || (playerRig.velocity.x > 0.001 && playerData.gravityDirection.x == -1) || (playerRig.velocity.x < -0.001 && playerData.gravityDirection.x == 1))
-            {
-                playerAni.SetInteger("state", 3);//UP
-            }
-            else if ((playerRig.velocity.y > 0.001 && playerData.gravityDirection.y == 1) || (playerRig.velocity.y < -0.001 && playerData.gravityDirection.y == -1) || (playerRig.velocity.x > 0.001 && playerData.gravityDirection.x == 1) || (playerRig.velocity.x < -0.001 && playerData.gravityDirection.x == -1))
-            {
-                playerAni.SetInteger("state", 4);//DOWN
-            }
-
-            else if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)) && Input.GetKey(KeyCode.LeftControl))
-            {
-                playerAni.SetInteger("state", 1);//WALK
-            }
+            if ((playerRig.velocity.y > 0.001 && playerData.gravityDirection.y == -1) ||
+                (playerRig.velocity.y < -0.001 && playerData.gravityDirection.y == 1) ||
+                (playerRig.velocity.x > 0.001 && playerData.gravityDirection.x == -1) ||
+                (playerRig.velocity.x < -0.001 && playerData.gravityDirection.x == 1))
+                playerAni.SetInteger("state", 3);
+            else if ((playerRig.velocity.y > 0.001 && playerData.gravityDirection.y == 1) ||
+                     (playerRig.velocity.y < -0.001 && playerData.gravityDirection.y == -1) ||
+                     (playerRig.velocity.x > 0.001 && playerData.gravityDirection.x == 1) ||
+                     (playerRig.velocity.x < -0.001 && playerData.gravityDirection.x == -1))
+                playerAni.SetInteger("state", 4);
         }
         else
         {
-            if (Input.GetKey(KeyCode.W))
-            {
-                playerAni.SetInteger("state", 2);//SQUAT
-            }
-            else if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)) && Input.GetKey(KeyCode.LeftControl))
-            {
-                playerAni.SetInteger("state", 1);//WALK
-            }
-            else
-            {
+            if (playerData.powerTime != 0) //Input.GetKey(KeyCode.W))
+                playerAni.SetInteger("state", 2);
+            else if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.LeftControl))
                 playerAni.SetInteger("state", 0);
-            }
+            else if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)) && Input.GetKey(KeyCode.LeftControl))
+                playerAni.SetInteger("state", 1);
+            else
+                playerAni.SetInteger("state", 0);
         }
-        Debug.Log(playerData.gravityDirection.x);
-        
-    }
 
+        Debug.Log(playerData.gravityDirection.x);
+    }
 }

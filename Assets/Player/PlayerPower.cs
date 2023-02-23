@@ -2,9 +2,10 @@ using UnityEngine;
 
 namespace Player
 {
+    //TODO spin camera
     //TODO goal detect
     public class PlayerPower : MonoBehaviour
-    {   
+    {
         public PlayerData playerData;
         public GameObject tpFlag;
 
@@ -31,6 +32,7 @@ namespace Player
             playerData.gravityDirection = Vector2.down;
             playerData.maxPowerTime = 1.5f;
             _aWaJumped = true;
+            PlayerPrefs.DeleteAll();
             if (PlayerPrefs.GetFloat("savePointX") == 0)
             {
                 //no played
@@ -55,14 +57,13 @@ namespace Player
             CheckCollision();
             AddGravity();
             CheckStatus();
-            // Stop();
+            Stop();
         }
 
 
         private void SavePoint()
         {
             _saveCounter += Time.deltaTime;
-            Debug.Log("savedX :" + PlayerPrefs.GetFloat("savePointX"));
             if (playerData.status == Status.Idle && _saveCounter > 1)
             {
                 var position = transform.position;
@@ -75,9 +76,7 @@ namespace Player
 
         private void CheckStatus()
         {
-            if (_rigidbody2D.velocity != Vector2.zero)
-                playerData.status = Status.Jumping;
-            else
+            if (_rigidbody2D.velocity == Vector2.zero && playerData.status == Status.Jumping)
                 playerData.status = Status.Idle;
         }
 
@@ -140,19 +139,31 @@ namespace Player
             if (Input.GetKey(KeyCode.T) && playerData.status == Status.Idle)
                 SaveTp();
             else if (Input.GetKey(KeyCode.P) && playerData.status == Status.Idle) Tp();
-            if (Input.GetKey(KeyCode.LeftControl) && playerData.status == Status.Idle)
+            if (Input.GetKey(KeyCode.LeftControl) && playerData.status == Status.Idle && playerData.powerTime == 0 &&
+                Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) == 0)
             {
                 //normal move
-                if (Input.GetKey(KeyCode.A)) _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
+                if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A))
+                {
+                }
+                else if (Input.GetKey(KeyCode.A))
+                {
+                    _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
+                }
                 else if (Input.GetKey(KeyCode.D))
+                {
                     _rigidbody2D.velocity = Anticlockwise90deg(playerData.gravityDirection);
-                else _rigidbody2D.velocity = Vector2.zero;
+                }
+                else
+                {
+                    _rigidbody2D.velocity = Vector2.zero;
+                }
             }
             else
             {
-                if (!Input.GetKey("w"))
+                if (!GetJumpInput())
                     _aWaJumped = false;
-                if (Input.GetKey("w") && playerData.status == Status.Idle)
+                if (GetJumpInput() && playerData.status == Status.Idle)
                 {
                     if (!_aWaJumped)
                     {
@@ -161,7 +172,7 @@ namespace Player
                         if (playerData.powerTime > 1.5) Jump();
                     }
                 }
-                else if (!Input.GetKey("w") && playerData.status == Status.Idle)
+                else if (!GetJumpInput() && playerData.status == Status.Idle)
                 {
                     if (playerData.powerTime < 0.3 && playerData.powerTime > 0)
                     {
@@ -178,6 +189,11 @@ namespace Player
             }
         }
 
+        private bool GetJumpInput()
+        {
+            return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space);
+        }
+
         private void Jump()
         {
             if (playerData.freeAngle)
@@ -186,8 +202,6 @@ namespace Player
                 _direction = transform.position - _forceLocal.position;
                 var speed = _rigidbody2D.velocity;
                 speed = _direction * (playerData.powerTime * playerData.timeForce + playerData.baseSpeed);
-                //max 16 min 10
-                //max 16 min 5
                 _rigidbody2D.velocity = speed;
             }
             else
@@ -209,11 +223,12 @@ namespace Player
 
             playerData.powerTime = 0;
             _aWaJumped = true;
+            playerData.status = Status.Jumping;
         }
 
         private void Stop()
         {
-            if (CheckCollisionDown() && playerData.status == Status.Jumping)
+            if (CheckCollisionDown() && Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) > 0)
             {
                 _rigidbody2D.velocity = Vector2.zero;
                 playerData.status = Status.Idle;
@@ -222,12 +237,17 @@ namespace Player
 
         private bool CheckCollisionDown()
         {
-            _raycastHit2DDown = Physics2D.Raycast(transform.position, playerData.gravityDirection,
-                _collider2D.bounds.extents.y + playerData.hitDownDistance,
-                1 << LayerMask.NameToLayer("map"));
-            if (_raycastHit2DDown.collider)
-                return true;
-            return false;
+            if (playerData.gravityDirection.x == 0)
+                _raycastHit2DDown = Physics2D.Raycast(transform.position, playerData.gravityDirection,
+                    _collider2D.bounds.extents.y + playerData.hitDownDistance,
+                    1 << LayerMask.NameToLayer("map"));
+            else
+                _raycastHit2DDown = Physics2D.Raycast(transform.position, playerData.gravityDirection,
+                    _collider2D.bounds.extents.x + playerData.hitDownDistance,
+                    1 << LayerMask.NameToLayer("map"));
+
+            return _raycastHit2DDown.collider;
+            // Debug.Log(_raycastHit2DDown.collider.transform.name);
         }
 
         private void SaveTp()
@@ -243,6 +263,12 @@ namespace Player
         private void Tp()
         {
             if (!tpLocation.Equals(Vector2.zero) && PlayerPrefs.GetInt("haveTP") == 1) transform.position = tpLocation;
+        }
+
+        private void Goal()
+        {
+            //TODO gravity disappear , maybe status = idle
+            //TODO fire work 
         }
     }
 }
