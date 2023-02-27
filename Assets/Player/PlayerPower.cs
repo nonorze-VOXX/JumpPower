@@ -54,10 +54,9 @@ namespace Player
         {
             SavePoint();
             CheckMoveInput();
-            CheckCollision();
             AddGravity();
-            CheckStatus();
-            Stop();
+            CollideWall();
+            CollideGround();
         }
 
 
@@ -74,26 +73,12 @@ namespace Player
             }
         }
 
-        private void CheckStatus()
-        {
-            if (_rigidbody2D.velocity == Vector2.zero && playerData.status == Status.Jumping)
-                playerData.status = Status.Idle;
-        }
-
-
         private void AddGravity()
         {
             if (Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) < playerData.maxSpeed)
                 //gravity *deltaTime *timeFix
                 _rigidbody2D.AddForce(playerData.gravityDirection * (playerData.gravity * Time.deltaTime * 57));
         }
-
-        private void CheckCollision()
-        {
-            // CheckCollisionDown();
-            CollideWall(playerData.gravityDirection);
-        }
-
 
         private bool CheckCollisionWall(Vector2 wallDirection)
         {
@@ -107,7 +92,6 @@ namespace Player
             // Debug.DrawRay(position, wallDirection * hitDistance, Color.green);
             return _raycastHit2D.collider;
         }
-
 
         private Vector2 Anticlockwise90deg(Vector2 v)
         {
@@ -123,69 +107,77 @@ namespace Player
             return Vector2.zero;
         }
 
-        private void CollideWall(Vector2 groundDirection)
+        private void CollideWall()
         {
             var speed = _rigidbody2D.velocity;
-            var collisionDirection = GetCollideWallDirection(groundDirection);
+            var collisionDirection = GetCollideWallDirection(playerData.gravityDirection);
             if (collisionDirection == Vector2.zero) return; // didn't collide the wall
 
             if (Vector2.Dot(speed, collisionDirection) > 0)
-                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection * -playerData.collideWallSpeedDelta);
+                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection) * playerData.collideWallSpeedDelta;
         }
 
-
-        private void CheckMoveInput()
-        {
-            if (Input.GetKey(KeyCode.T) && playerData.status == Status.Idle)
-                SaveTp();
-            else if (Input.GetKey(KeyCode.P) && playerData.status == Status.Idle) Tp();
-            if (Input.GetKey(KeyCode.LeftControl) && playerData.status == Status.Idle && playerData.powerTime == 0 &&
-                Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) == 0)
+        private void teleportInput() {
+            if (layerPrefs.GetInt("haveTP") == 1) {
+                if (Input.GetKey(KeyCode.T))
+                    SaveTp();
+                else if (Input.GetKey(KeyCode.P))
+                    Tp();
+            }
+        }
+        
+        private void walkInput() {
+            if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A))
             {
-                //normal move
-                if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A))
-                {
-                }
-                else if (Input.GetKey(KeyCode.A))
-                {
-                    _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
-                }
-                else if (Input.GetKey(KeyCode.D))
-                {
-                    _rigidbody2D.velocity = Anticlockwise90deg(playerData.gravityDirection);
-                }
-                else
-                {
-                    _rigidbody2D.velocity = Vector2.zero;
-                }
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                _rigidbody2D.velocity = Anticlockwise90deg(playerData.gravityDirection);
             }
             else
             {
-                if (!GetJumpInput())
-                    _aWaJumped = false;
-                if (GetJumpInput() && playerData.status == Status.Idle)
-                {
-                    if (!_aWaJumped)
-                    {
-                        _direction = transform.position - _forceLocal.position;
-                        playerData.powerTime += Time.deltaTime;
-                        if (playerData.powerTime > playerData.maxPowerTime) Jump();
-                    }
-                }
-                else if (!GetJumpInput() && playerData.status == Status.Idle)
-                {
-                    if (playerData.powerTime < 0.3 && playerData.powerTime > 0)
-                    {
-                        playerData.powerTime = 0;
-                        Jump();
-                    }
-                    else
-                    {
-                        if (playerData.powerTime != 0) Jump();
-                    }
+                _rigidbody2D.velocity = Vector2.zero;
+            }
+        }
 
+        private void focusInput() {
+            if (playerData.powerTime > playerData.maxPowerTime)
+                Jump();
+            else if (GetJumpInput())
+            {
+                playerData.powerTime += Time.deltaTime;
+            }
+            else if (playerData.powerTime != 0)
+            {
+                if (0 < playerData.powerTime && playerData.powerTime < 0.3)
                     playerData.powerTime = 0;
-                }
+                Jump();
+            }
+        }
+
+        private void CheckMoveInput()
+        {
+            switch (playerData.status)
+            {
+                case Status.Idle:
+                    teleportInput();
+                    if (Input.GetKey(KeyCode.LeftControl)) playerData.status = Status.Walk;
+                    if (GetJumpInput()) playerData.status = Status.Focus;
+                    break;
+                case Status.Walk:
+                    walkInput();
+                    if (!Input.GetKey(KeyCode.LeftControl)) playerData.status = Status.Idle;
+                    break;
+                case Status.Focus:
+                    focusInput(); // state transition is wrapped in
+                    break;
+                case Status.Jumping:
+                    if (_rigidbody2D.velocity == Vector2.zero && !GetJumpInput()) playerData.status = Status.Idle;
+                    break;
             }
         }
 
@@ -226,43 +218,25 @@ namespace Player
             playerData.status = Status.Jumping;
         }
 
-        private void Stop()
+        private void CollideGround()
         {
-            if (CheckCollisionDown() && Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) > 0)
-            {
+            var isFalling =  Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) > 0;
+            var isCollideGround = CheckCollisionWall(playerData.gravityDirection);
+            if (isCollideGround && isFalling)
                 _rigidbody2D.velocity = Vector2.zero;
-                playerData.status = Status.Idle;
-            }
-        }
-
-        private bool CheckCollisionDown()
-        {
-            if (playerData.gravityDirection.x == 0)
-                _raycastHit2DDown = Physics2D.Raycast(transform.position, playerData.gravityDirection,
-                    _collider2D.bounds.extents.y + playerData.hitDownDistance,
-                    1 << LayerMask.NameToLayer("map"));
-            else
-                _raycastHit2DDown = Physics2D.Raycast(transform.position, playerData.gravityDirection,
-                    _collider2D.bounds.extents.x + playerData.hitDownDistance,
-                    1 << LayerMask.NameToLayer("map"));
-
-            return _raycastHit2DDown.collider;
-            // Debug.Log(_raycastHit2DDown.collider.transform.name);
         }
 
         private void SaveTp()
         {
-            if (PlayerPrefs.GetInt("haveTP") == 1)
-            {
-                var position = transform.position;
-                tpLocation = position;
-                tpFlag.transform.position = position;
-            }
+            var position = transform.position;
+            tpLocation = position;
+            tpFlag.transform.position = position;
         }
 
         private void Tp()
         {
-            if (!tpLocation.Equals(Vector2.zero) && PlayerPrefs.GetInt("haveTP") == 1) transform.position = tpLocation;
+            if (!tpLocation.Equals(Vector2.zero))
+                transform.position = tpLocation;
         }
 
         private void Goal()
