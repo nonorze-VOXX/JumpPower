@@ -39,54 +39,21 @@ public class ForceLocal : MonoBehaviour
 
     private void CheckAngle()
     {
-        if (playerData.gravityDirection.Equals(Vector2.down) &&
-            !playerData.nowGravityAngleLockNull.Equals(playerData.angleLockNull))
-        {
-            _gravityAngleMax = playerData.angleMax;
-            _gravityAngleMin = playerData.angleMin;
-            _containerTransform.rotation = Quaternion.Euler(0, 0, 0);
-            playerData.nowGravityAngleLockA = playerData.angleLockA;
-            playerData.nowGravityAngleLockD = playerData.angleLockD;
-            playerData.nowGravityAngleLockNull = playerData.angleLockNull;
-        }
-        else if (playerData.gravityDirection.Equals(Vector2.right) &&
-                 !playerData.nowGravityAngleLockNull.Equals(Spin90Angle(playerData.angleLockNull)))
-        {
-            _gravityAngleMax = Spin90Angle(playerData.angleMax);
-            _gravityAngleMin = Spin90Angle(playerData.angleMin);
-            _containerTransform.rotation = Quaternion.Euler(0, 0, 90);
-            playerData.nowGravityAngleLockA = Spin90Angle(playerData.angleLockA);
-            playerData.nowGravityAngleLockD = Spin90Angle(playerData.angleLockD);
-            playerData.nowGravityAngleLockNull = Spin90Angle(playerData.angleLockNull);
-        }
-        else if (playerData.gravityDirection.Equals(Vector2.up) &&
-                 !playerData.nowGravityAngleLockNull.Equals(Spin90Angle(Spin90Angle(playerData.angleLockNull))))
-        {
-            _gravityAngleMax = Spin90Angle(Spin90Angle(playerData.angleMax));
-            _gravityAngleMin = Spin90Angle(Spin90Angle(playerData.angleMin));
-            _containerTransform.rotation = Quaternion.Euler(0, 0, 180);
-            playerData.nowGravityAngleLockA = Spin90Angle(Spin90Angle(playerData.angleLockA));
-            playerData.nowGravityAngleLockD = Spin90Angle(Spin90Angle(playerData.angleLockD));
-            playerData.nowGravityAngleLockNull = Spin90Angle(Spin90Angle(playerData.angleLockNull));
-        }
-        else if (playerData.gravityDirection.Equals(Vector2.left) &&
-                 !playerData.nowGravityAngleLockNull.Equals(
-                     Spin90Angle(Spin90Angle(Spin90Angle(playerData.angleLockNull)))))
-        {
-            _gravityAngleMax = Spin90Angle(Spin90Angle(Spin90Angle(playerData.angleMax)));
-            _gravityAngleMin = Spin90Angle(Spin90Angle(Spin90Angle(playerData.angleMin)));
-            _containerTransform.rotation = Quaternion.Euler(0, 0, 270);
-            playerData.nowGravityAngleLockA = Spin90Angle(Spin90Angle(Spin90Angle(playerData.angleLockA)));
-            playerData.nowGravityAngleLockD = Spin90Angle(Spin90Angle(Spin90Angle(playerData.angleLockD)));
-            playerData.nowGravityAngleLockNull = Spin90Angle(Spin90Angle(Spin90Angle(playerData.angleLockNull)));
+        float gAngle = 0;
+        if (playerData.gravityDirection.Equals(Vector2.down))  gAngle = 0;
+        if (playerData.gravityDirection.Equals(Vector2.right)) gAngle = 90;
+        if (playerData.gravityDirection.Equals(Vector2.up))    gAngle = 180;
+        if (playerData.gravityDirection.Equals(Vector2.left))  gAngle = 270;
+
+        if (!playerData.nowGravityAngleLockNull.Equals(playerData.angleLockNull + gAngle)) {
+            _gravityAngleMax = playerData.angleMax + gAngle;
+            _gravityAngleMin = playerData.angleMin + gAngle;
+            _containerTransform.rotation = Quaternion.Euler(0, 0, gAngle);
+            playerData.nowGravityAngleLockA = playerData.angleLockA + gAngle;
+            playerData.nowGravityAngleLockD = playerData.angleLockD + gAngle;
+            playerData.nowGravityAngleLockNull = playerData.angleLockNull + gAngle;
         }
     }
-
-    private float Spin90Angle(float beforeAngle)
-    {
-        return beforeAngle + 90;
-    }
-
 
     private void ChangeAngle()
     {
@@ -108,11 +75,17 @@ public class ForceLocal : MonoBehaviour
         }
     }
 
+    private Vector2 DegToVec2(float degree) {
+        var v = new Vector2();
+        var radian = degree * math.PI / 180
+        v.x = math.cos(radian);
+        v.y = math.sin(radian);
+        return v;
+    }
+
     private void UpdatePosition()
     {
         Vector2 position = _containerTransform.position;
-        position.x += math.cos(playerData.angle * math.PI / 180);
-        position.y += math.sin(playerData.angle * math.PI / 180);
-        transform.position = position;
+        transform.position = position + DegToVec2(playerData.angle);
     }
 }
