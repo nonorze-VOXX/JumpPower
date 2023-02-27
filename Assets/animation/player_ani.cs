@@ -51,7 +51,5 @@ public class player_ani : MonoBehaviour
             else
                 playerAni.SetInteger("state", 0);
         }
-
-        Debug.Log(playerData.gravityDirection.x);
     }
 }

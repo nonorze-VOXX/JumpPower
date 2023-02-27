@@ -13,6 +13,8 @@ namespace Player
         private Collider2D _collider2D;
         private Vector2 _direction;
         private Transform _forceLocal;
+        private bool _isPause;
+        private Vector2 _pauseSpeed;
         private RaycastHit2D _raycastHit2D;
         private RaycastHit2D _raycastHit2DDown;
         private Rigidbody2D _rigidbody2D;
@@ -22,6 +24,8 @@ namespace Player
 
         private void Start()
         {
+            _isPause = false;
+            _pauseSpeed = Vector2.zero;
             tpLocation = Vector2.zero;
             _saveCounter = 0;
             playerData.powerTime = 0;
@@ -30,7 +34,6 @@ namespace Player
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
-            playerData.maxPowerTime = 0.8f;
             _aWaJumped = true;
             PlayerPrefs.DeleteAll();
             if (PlayerPrefs.GetFloat("savePointX") == 0)
@@ -83,7 +86,9 @@ namespace Player
 
         private void AddGravity()
         {
-            if (Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) < playerData.maxSpeed)
+            if (_isPause) _rigidbody2D.velocity = Vector2.zero;
+            if (Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) < playerData.maxSpeed &&
+                _isPause == false)
                 //gravity *deltaTime *timeFix
                 _rigidbody2D.AddForce(playerData.gravityDirection * (playerData.gravity * Time.deltaTime * 57));
         }
@@ -269,6 +274,21 @@ namespace Player
         {
             //TODO gravity disappear , maybe status = idle
             //TODO fire work 
+        }
+
+        public void Pause()
+        {
+            if (_isPause)
+            {
+                (_pauseSpeed, _rigidbody2D.velocity) = (_rigidbody2D.velocity, _pauseSpeed);
+            }
+            else
+            {
+                (_pauseSpeed, _rigidbody2D.velocity) = (_rigidbody2D.velocity, _pauseSpeed);
+                _rigidbody2D.velocity = Vector2.zero;
+            }
+
+            _isPause = !_isPause;
         }
     }
 }
