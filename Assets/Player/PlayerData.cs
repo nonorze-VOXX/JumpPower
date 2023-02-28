@@ -5,6 +5,8 @@ namespace Player
     public enum Status
     {
         Idle,
+        Walk,
+        Focus,
         Jumping
     }
 
