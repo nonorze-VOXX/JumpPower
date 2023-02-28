@@ -17,14 +17,12 @@ namespace Player
         private RaycastHit2D _raycastHit2DDown;
         private Rigidbody2D _rigidbody2D;
         private float _saveCounter;
-        private Vector2 tpLocation;
 
 
         private void Start()
         {
             _isPause = false;
             _pauseSpeed = Vector2.zero;
-            tpLocation = Vector2.zero;
             _saveCounter = 0;
             playerData.powerTime = 0;
             _forceLocal = transform.GetChild(1);
@@ -36,7 +34,6 @@ namespace Player
             if (PlayerPrefs.GetFloat("savePointX") == 0)
             {
                 //no played
-                PlayerPrefs.SetInt("haveTP", 0);
                 PlayerPrefs.SetFloat("savePointX", playerData.playerSafedPosition.x);
                 PlayerPrefs.SetFloat("savePointY", playerData.playerSafedPosition.y);
                 PlayerPrefs.Save();
@@ -124,13 +121,8 @@ namespace Player
 
         private void teleportInput()
         {
-            if (PlayerPrefs.GetInt("haveTP") == 1)
-            {
-                if (Input.GetKey(KeyCode.T))
-                    SaveTp();
-                else if (Input.GetKey(KeyCode.P))
-                    Tp();
-            }
+            if (Input.GetKey(KeyCode.P))
+                Tp();
         }
 
         private void walkInput()
@@ -236,17 +228,12 @@ namespace Player
                 _rigidbody2D.velocity = Vector2.zero;
         }
 
-        private void SaveTp()
-        {
-            var position = transform.position;
-            tpLocation = position;
-            tpFlag.transform.position = position;
-        }
 
         private void Tp()
         {
-            if (!tpLocation.Equals(Vector2.zero))
-                transform.position = tpLocation;
+            var target = tpFlag.transform.position;
+            if (!target.Equals(Vector2.zero))
+                transform.position = target;
         }
 
         private void Goal()
