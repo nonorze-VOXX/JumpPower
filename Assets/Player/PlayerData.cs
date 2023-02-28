@@ -39,6 +39,8 @@ namespace Player
         public float maxSpeed;
         public float maxPowerTime;
         public bool freeAngle;
+
         public Status status;
+        // public Status cameraSpinStatus;
     }
 }

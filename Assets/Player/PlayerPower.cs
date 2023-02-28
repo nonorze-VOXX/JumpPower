@@ -8,7 +8,6 @@ namespace Player
         public PlayerData playerData;
         public GameObject tpFlag;
 
-        private bool _aWaJumped;
         private Collider2D _collider2D;
         private Vector2 _direction;
         private Transform _forceLocal;
@@ -33,7 +32,6 @@ namespace Player
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
-            _aWaJumped = true;
             PlayerPrefs.DeleteAll();
             if (PlayerPrefs.GetFloat("savePointX") == 0)
             {
@@ -54,11 +52,14 @@ namespace Player
 
         private void Update()
         {
-            SavePoint();
-            CheckMoveInput();
             AddGravity();
-            CollideWall();
-            CollideGround();
+            if (!_isPause)
+            {
+                SavePoint();
+                CheckMoveInput();
+                CollideWall();
+                CollideGround();
+            }
         }
 
 
@@ -121,16 +122,19 @@ namespace Player
                 _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection) * playerData.collideWallSpeedDelta;
         }
 
-        private void teleportInput() {
-            if (layerPrefs.GetInt("haveTP") == 1) {
+        private void teleportInput()
+        {
+            if (PlayerPrefs.GetInt("haveTP") == 1)
+            {
                 if (Input.GetKey(KeyCode.T))
                     SaveTp();
                 else if (Input.GetKey(KeyCode.P))
                     Tp();
             }
         }
-        
-        private void walkInput() {
+
+        private void walkInput()
+        {
             if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A))
             {
             }
@@ -148,9 +152,12 @@ namespace Player
             }
         }
 
-        private void focusInput() {
+        private void focusInput()
+        {
             if (playerData.powerTime > playerData.maxPowerTime)
+            {
                 Jump();
+            }
             else if (GetJumpInput())
             {
                 playerData.powerTime += Time.deltaTime;
@@ -218,13 +225,12 @@ namespace Player
             }
 
             playerData.powerTime = 0;
-            _aWaJumped = true;
             playerData.status = Status.Jumping;
         }
 
         private void CollideGround()
         {
-            var isFalling =  Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) > 0;
+            var isFalling = Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) > 0;
             var isCollideGround = CheckCollisionWall(playerData.gravityDirection);
             if (isCollideGround && isFalling)
                 _rigidbody2D.velocity = Vector2.zero;

@@ -40,12 +40,13 @@ public class ForceLocal : MonoBehaviour
     private void CheckAngle()
     {
         float gAngle = 0;
-        if (playerData.gravityDirection.Equals(Vector2.down))  gAngle = 0;
+        if (playerData.gravityDirection.Equals(Vector2.down)) gAngle = 0;
         if (playerData.gravityDirection.Equals(Vector2.right)) gAngle = 90;
-        if (playerData.gravityDirection.Equals(Vector2.up))    gAngle = 180;
-        if (playerData.gravityDirection.Equals(Vector2.left))  gAngle = 270;
+        if (playerData.gravityDirection.Equals(Vector2.up)) gAngle = 180;
+        if (playerData.gravityDirection.Equals(Vector2.left)) gAngle = 270;
 
-        if (!playerData.nowGravityAngleLockNull.Equals(playerData.angleLockNull + gAngle)) {
+        if (!playerData.nowGravityAngleLockNull.Equals(playerData.angleLockNull + gAngle))
+        {
             _gravityAngleMax = playerData.angleMax + gAngle;
             _gravityAngleMin = playerData.angleMin + gAngle;
             _containerTransform.rotation = Quaternion.Euler(0, 0, gAngle);
@@ -75,9 +76,10 @@ public class ForceLocal : MonoBehaviour
         }
     }
 
-    private Vector2 DegToVec2(float degree) {
+    private Vector2 DegToVec2(float degree)
+    {
         var v = new Vector2();
-        var radian = degree * math.PI / 180
+        var radian = degree * math.PI / 180;
         v.x = math.cos(radian);
         v.y = math.sin(radian);
         return v;
