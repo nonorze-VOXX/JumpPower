@@ -41,10 +41,13 @@ namespace Player.Camera
         private void Update()
         {
             transform.position = cameraData.cameraPosition;
-            if (_spining)
-                SpinCamera();
-            else
-                SpinCameraTrigger();
+            if (cameraData.isCameraSpin)
+            {
+                if (_spining)
+                    SpinCamera();
+                else
+                    SpinCameraTrigger();
+            }
         }
 
         private void SpinCamera()

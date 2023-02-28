@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace Player
 {
-    //TODO spin camera
     //TODO goal detect
     public class PlayerPower : MonoBehaviour
     {

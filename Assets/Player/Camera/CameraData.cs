@@ -9,5 +9,6 @@ namespace Player.Camera
         public Vector2 cameraLocalSpace;
         public List<Vector2> cameraLocalList;
         public Vector3 cameraPosition;
+        public bool isCameraSpin;
     }
 }
