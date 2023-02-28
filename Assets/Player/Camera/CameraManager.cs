@@ -4,80 +4,68 @@ using UnityEngine;
 
 namespace Player.Camera
 {
-    internal struct GravityToAngle
-    {
-        public Vector2 Dir;
-        public float Angle;
-    }
-
     public class CameraManager : MonoBehaviour
     {
         public CameraData cameraData;
         public PlayerData playerData;
         public GameObject player;
-        private readonly List<GravityToAngle> _gravityToAngle = new();
         private Vector2 _pastGravity;
         private bool _spining;
+    
+        const float rotate90degTime = 1.0f;
 
         private void Start()
         {
             _pastGravity = playerData.gravityDirection;
-            GravityToAngle gravityToAngle;
-            gravityToAngle.Angle = 0;
-            gravityToAngle.Dir = Vector2.down;
-            _gravityToAngle.Add(gravityToAngle);
-            gravityToAngle.Angle = 90;
-            gravityToAngle.Dir = Vector2.right;
-            _gravityToAngle.Add(gravityToAngle);
-            gravityToAngle.Angle = 180;
-            gravityToAngle.Dir = Vector2.up;
-            _gravityToAngle.Add(gravityToAngle);
-            gravityToAngle.Angle = 270;
-            gravityToAngle.Dir = Vector2.left;
-            _gravityToAngle.Add(gravityToAngle);
             _spining = false;
         }
 
         private void Update()
         {
             transform.position = cameraData.cameraPosition;
-            if (cameraData.isCameraSpin)
+            if (cameraData.canSpin)
             {
-                if (_spining)
-                    SpinCamera();
-                else
-                    SpinCameraTrigger();
-            }
-        }
-
-        private void SpinCamera()
-        {
-            foreach (var gta in _gravityToAngle)
-                if (gta.Dir == playerData.gravityDirection)
-                {
-                    if (Math.Abs(gta.Angle % 360 - transform.rotation.eulerAngles.z % 360) > 0.1)
-                    {
-                        var rotation = transform.rotation;
-                        rotation = Quaternion.Euler(0, 0, rotation.eulerAngles.z + 1);
-                        transform.rotation = rotation;
-                    }
-                    else
-                    {
-                        _spining = false;
-                        player.GetComponent<PlayerPower>().Pause();
-                    }
+                if (_spining) {
+                    var done = SpinCamera();
+                    if (done)
+                        PausePlay(); // play
                 }
+                else
+                {
+                    if (playerData.gravityDirection != _pastGravity)
+                        PausePlay(); // pause
+                }   
+                _pastGravity = playerData.gravityDirection;
+            }
+        }
+        private void PausePlay()
+        {
+            _spining = !_spining;
+            player.GetComponent<PlayerPower>().PausePlay();
         }
 
-        private void SpinCameraTrigger()
+        private bool SpinCamera()
         {
-            if (playerData.gravityDirection != _pastGravity)
-            {
-                _spining = true;
-                player.GetComponent<PlayerPower>().Pause();
-            }
+            float targetAngle = Vector2.SignedAngle(Vector2.down, playerData.gravityDirection);
+            if (targetAngle < 0) targetAngle += 360;
+            //Quaternion targetRotation = Quaternion.Euler(0, 0, targetAngle);
+            
+            float currentAngle = transform.rotation.eulerAngles.z;
+            //float angleBetween = Quaternion.Angle(transform.rotation, targetRotation);
+            float angleBetween = targetAngle - currentAngle;
 
-            _pastGravity = playerData.gravityDirection;
+            float dRo = Time.deltaTime * (90.0f / rotate90degTime);
+
+            if (1 < angleBetween)
+                transform.Rotate(0, 0, dRo);
+            else if (angleBetween < -1)
+                transform.Rotate(0, 0, -dRo);
+            else
+            {
+                transform.rotation = targetRotation;
+                return true;
+            }
+            return false;
         }
     }
 }

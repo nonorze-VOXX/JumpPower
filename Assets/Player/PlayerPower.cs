@@ -249,7 +249,7 @@ namespace Player
             //TODO fire work 
         }
 
-        public void Pause()
+        public void PausePlay()
         {
             if (_isPause)
             {

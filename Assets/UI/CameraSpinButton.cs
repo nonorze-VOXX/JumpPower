@@ -13,12 +13,12 @@ public class CameraSpinButton : MonoBehaviour
     {
         var btn = yourButton.GetComponent<Button>();
         btn.onClick.AddListener(TaskOnClick);
-        v.SetActive(cameraData.isCameraSpin);
+        v.SetActive(cameraData.canSpin);
     }
 
     private void TaskOnClick()
     {
-        cameraData.isCameraSpin = !cameraData.isCameraSpin;
-        v.SetActive(cameraData.isCameraSpin);
+        cameraData.canSpin = !cameraData.canSpin;
+        v.SetActive(cameraData.canSpin);
     }
 }
