@@ -2,27 +2,27 @@ using UnityEngine;
 
 namespace Player
 {
-    //TODO spin camera
     //TODO goal detect
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
         public GameObject tpFlag;
 
-        private bool _aWaJumped;
         private Collider2D _collider2D;
         private Vector2 _direction;
         private Transform _forceLocal;
+        private bool _isPause;
+        private Vector2 _pauseSpeed;
         private RaycastHit2D _raycastHit2D;
         private RaycastHit2D _raycastHit2DDown;
         private Rigidbody2D _rigidbody2D;
         private float _saveCounter;
-        private Vector2 tpLocation;
 
 
         private void Start()
         {
-            tpLocation = Vector2.zero;
+            _isPause = false;
+            _pauseSpeed = Vector2.zero;
             _saveCounter = 0;
             playerData.powerTime = 0;
             _forceLocal = transform.GetChild(1);
@@ -30,13 +30,10 @@ namespace Player
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
-            playerData.maxPowerTime = 0.8f;
-            _aWaJumped = true;
             PlayerPrefs.DeleteAll();
             if (PlayerPrefs.GetFloat("savePointX") == 0)
             {
                 //no played
-                PlayerPrefs.SetInt("haveTP", 0);
                 PlayerPrefs.SetFloat("savePointX", playerData.playerSafedPosition.x);
                 PlayerPrefs.SetFloat("savePointY", playerData.playerSafedPosition.y);
                 PlayerPrefs.Save();
@@ -52,12 +49,14 @@ namespace Player
 
         private void Update()
         {
-            SavePoint();
-            CheckMoveInput();
-            CheckCollision();
             AddGravity();
-            CheckStatus();
-            Stop();
+            if (!_isPause)
+            {
+                SavePoint();
+                CheckMoveInput();
+                CollideWall();
+                CollideGround();
+            }
         }
 
 
@@ -74,26 +73,14 @@ namespace Player
             }
         }
 
-        private void CheckStatus()
-        {
-            if (_rigidbody2D.velocity == Vector2.zero && playerData.status == Status.Jumping)
-                playerData.status = Status.Idle;
-        }
-
-
         private void AddGravity()
         {
-            if (Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) < playerData.maxSpeed)
+            if (_isPause) _rigidbody2D.velocity = Vector2.zero;
+            if (Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) < playerData.maxSpeed &&
+                _isPause == false)
                 //gravity *deltaTime *timeFix
                 _rigidbody2D.AddForce(playerData.gravityDirection * (playerData.gravity * Time.deltaTime * 57));
         }
-
-        private void CheckCollision()
-        {
-            // CheckCollisionDown();
-            CollideWall(playerData.gravityDirection);
-        }
-
 
         private bool CheckCollisionWall(Vector2 wallDirection)
         {
@@ -107,7 +94,6 @@ namespace Player
             // Debug.DrawRay(position, wallDirection * hitDistance, Color.green);
             return _raycastHit2D.collider;
         }
-
 
         private Vector2 Anticlockwise90deg(Vector2 v)
         {
@@ -123,69 +109,78 @@ namespace Player
             return Vector2.zero;
         }
 
-        private void CollideWall(Vector2 groundDirection)
+        private void CollideWall()
         {
             var speed = _rigidbody2D.velocity;
-            var collisionDirection = GetCollideWallDirection(groundDirection);
+            var collisionDirection = GetCollideWallDirection(playerData.gravityDirection);
             if (collisionDirection == Vector2.zero) return; // didn't collide the wall
 
             if (Vector2.Dot(speed, collisionDirection) > 0)
-                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection * -playerData.collideWallSpeedDelta);
+                _rigidbody2D.velocity = Vector2.Reflect(speed, collisionDirection) * playerData.collideWallSpeedDelta;
         }
 
-
-        private void CheckMoveInput()
+        private void teleportInput()
         {
-            if (Input.GetKey(KeyCode.T) && playerData.status == Status.Idle)
-                SaveTp();
-            else if (Input.GetKey(KeyCode.P) && playerData.status == Status.Idle) Tp();
-            if (Input.GetKey(KeyCode.LeftControl) && playerData.status == Status.Idle && playerData.powerTime == 0 &&
-                Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) == 0)
+            if (Input.GetKey(KeyCode.P))
+                Tp();
+        }
+
+        private void walkInput()
+        {
+            if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A))
             {
-                //normal move
-                if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A))
-                {
-                }
-                else if (Input.GetKey(KeyCode.A))
-                {
-                    _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
-                }
-                else if (Input.GetKey(KeyCode.D))
-                {
-                    _rigidbody2D.velocity = Anticlockwise90deg(playerData.gravityDirection);
-                }
-                else
-                {
-                    _rigidbody2D.velocity = Vector2.zero;
-                }
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                _rigidbody2D.velocity = Anticlockwise90deg(playerData.gravityDirection);
             }
             else
             {
-                if (!GetJumpInput())
-                    _aWaJumped = false;
-                if (GetJumpInput() && playerData.status == Status.Idle)
-                {
-                    if (!_aWaJumped)
-                    {
-                        _direction = transform.position - _forceLocal.position;
-                        playerData.powerTime += Time.deltaTime;
-                        if (playerData.powerTime > playerData.maxPowerTime) Jump();
-                    }
-                }
-                else if (!GetJumpInput() && playerData.status == Status.Idle)
-                {
-                    if (playerData.powerTime < 0.3 && playerData.powerTime > 0)
-                    {
-                        playerData.powerTime = 0;
-                        Jump();
-                    }
-                    else
-                    {
-                        if (playerData.powerTime != 0) Jump();
-                    }
+                _rigidbody2D.velocity = Vector2.zero;
+            }
+        }
 
+        private void focusInput()
+        {
+            if (playerData.powerTime > playerData.maxPowerTime)
+            {
+                Jump();
+            }
+            else if (GetJumpInput())
+            {
+                playerData.powerTime += Time.deltaTime;
+            }
+            else if (playerData.powerTime != 0)
+            {
+                if (0 < playerData.powerTime && playerData.powerTime < 0.3)
                     playerData.powerTime = 0;
-                }
+                Jump();
+            }
+        }
+
+        private void CheckMoveInput()
+        {
+            switch (playerData.status)
+            {
+                case Status.Idle:
+                    teleportInput();
+                    if (Input.GetKey(KeyCode.LeftControl)) playerData.status = Status.Walk;
+                    if (GetJumpInput()) playerData.status = Status.Focus;
+                    break;
+                case Status.Walk:
+                    walkInput();
+                    if (!Input.GetKey(KeyCode.LeftControl)) playerData.status = Status.Idle;
+                    break;
+                case Status.Focus:
+                    focusInput(); // state transition is wrapped in
+                    break;
+                case Status.Jumping:
+                    if (_rigidbody2D.velocity == Vector2.zero && !GetJumpInput()) playerData.status = Status.Idle;
+                    break;
             }
         }
 
@@ -222,53 +217,44 @@ namespace Player
             }
 
             playerData.powerTime = 0;
-            _aWaJumped = true;
             playerData.status = Status.Jumping;
         }
 
-        private void Stop()
+        private void CollideGround()
         {
-            if (CheckCollisionDown() && Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) > 0)
-            {
+            var isFalling = Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) > 0;
+            var isCollideGround = CheckCollisionWall(playerData.gravityDirection);
+            if (isCollideGround && isFalling)
                 _rigidbody2D.velocity = Vector2.zero;
-                playerData.status = Status.Idle;
-            }
         }
 
-        private bool CheckCollisionDown()
-        {
-            if (playerData.gravityDirection.x == 0)
-                _raycastHit2DDown = Physics2D.Raycast(transform.position, playerData.gravityDirection,
-                    _collider2D.bounds.extents.y + playerData.hitDownDistance,
-                    1 << LayerMask.NameToLayer("map"));
-            else
-                _raycastHit2DDown = Physics2D.Raycast(transform.position, playerData.gravityDirection,
-                    _collider2D.bounds.extents.x + playerData.hitDownDistance,
-                    1 << LayerMask.NameToLayer("map"));
-
-            return _raycastHit2DDown.collider;
-            // Debug.Log(_raycastHit2DDown.collider.transform.name);
-        }
-
-        private void SaveTp()
-        {
-            if (PlayerPrefs.GetInt("haveTP") == 1)
-            {
-                var position = transform.position;
-                tpLocation = position;
-                tpFlag.transform.position = position;
-            }
-        }
 
         private void Tp()
         {
-            if (!tpLocation.Equals(Vector2.zero) && PlayerPrefs.GetInt("haveTP") == 1) transform.position = tpLocation;
+            var target = tpFlag.transform.position;
+            if (!target.Equals(Vector2.zero))
+                transform.position = target;
         }
 
         private void Goal()
         {
             //TODO gravity disappear , maybe status = idle
             //TODO fire work 
+        }
+
+        public void Pause()
+        {
+            if (_isPause)
+            {
+                (_pauseSpeed, _rigidbody2D.velocity) = (_rigidbody2D.velocity, _pauseSpeed);
+            }
+            else
+            {
+                (_pauseSpeed, _rigidbody2D.velocity) = (_rigidbody2D.velocity, _pauseSpeed);
+                _rigidbody2D.velocity = Vector2.zero;
+            }
+
+            _isPause = !_isPause;
         }
     }
 }

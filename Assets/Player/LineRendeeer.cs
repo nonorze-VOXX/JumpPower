@@ -39,6 +39,7 @@ public class LineRendeeer : MonoBehaviour
 
     private void AddPoints()
     {
+        if (points.Count > 200) points.Remove(points[0]);
         points.Add(transform.position);
         line.SetPositions(points.ToArray());
         line.positionCount = points.Count;

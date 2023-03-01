@@ -16,7 +16,7 @@ MonoBehaviour:
   angleMax: -10
   angleMin: -170
   gravity: 25
-  hitDistance: 0.05
+  hitDistance: 0.01
   hitDownDistance: 0.05
   collideWallSpeedDelta: 0.8
   baseSpeed: 3

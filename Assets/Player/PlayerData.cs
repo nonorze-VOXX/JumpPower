@@ -5,6 +5,8 @@ namespace Player
     public enum Status
     {
         Idle,
+        Walk,
+        Focus,
         Jumping
     }
 
@@ -37,6 +39,8 @@ namespace Player
         public float maxSpeed;
         public float maxPowerTime;
         public bool freeAngle;
+
         public Status status;
+        // public Status cameraSpinStatus;
     }
 }
