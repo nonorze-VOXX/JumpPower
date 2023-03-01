@@ -21,10 +21,10 @@ public class player_ani : MonoBehaviour
     private void Update()
     {
         if (Input.GetKey(KeyCode.A))
-            if (playerSR.flipX == false && playerData.status == Status.Idle)
+            if (playerSR.flipX == false && playerData.status != Status.Jumping)
                 playerSR.flipX = true;
         if (Input.GetKey(KeyCode.D))
-            if (playerSR.flipX && playerData.status == Status.Idle)
+            if (playerSR.flipX && playerData.status != Status.Jumping)
                 playerSR.flipX = false;
 
         if (playerData.status == Status.Jumping)
