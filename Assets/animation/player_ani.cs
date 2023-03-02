@@ -12,6 +12,7 @@ public class player_ani : MonoBehaviour
     public GameObject endText;
     public GameObject speedLine;
     public GameObject lightup;
+    public GameObject playerLine;
     public GameObject lightdown;
     public GameObject fuse;
     public GameObject triggerObject;
@@ -84,12 +85,12 @@ public class player_ani : MonoBehaviour
         cameraData.CameraStatus = CameraStatus.GameEnd;
         map.SetActive(false);
         speedLine.SetActive(true);
+        playerLine.SetActive(false);
         Invoke("GameEndding", 5);
     }
 
     private void GameEndding()
     {
-        triggerObject.SetActive(false);
         endText.SetActive(true);
         Time.timeScale = 0f;
     }

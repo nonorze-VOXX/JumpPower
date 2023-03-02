@@ -173,6 +173,7 @@ namespace Player
                     break;
                 case Status.Walk:
                     walkInput();
+                    var isCollideGround = CheckCollisionWall(playerData.gravityDirection);
                     if (!Input.GetKey(KeyCode.LeftControl)) playerData.status = Status.Idle;
                     break;
                 case Status.Focus:

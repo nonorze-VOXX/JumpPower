@@ -55,7 +55,11 @@ namespace Player.Camera
 
                     break;
                 case CameraStatus.GameEnd:
-                    transform.position = GameObject.Find("power").transform.position;
+
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                    var newPosition = GameObject.Find("power").transform.position;
+                    newPosition.z = -10;
+                    transform.position = newPosition;
                     break;
             }
         }
