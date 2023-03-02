@@ -92,6 +92,6 @@ public class player_ani : MonoBehaviour
     private void GameEndding()
     {
         endText.SetActive(true);
-        Time.timeScale = 0f;
+        playerData.gravityDirection = transform.parent.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
     }
 }

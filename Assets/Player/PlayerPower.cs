@@ -237,12 +237,6 @@ namespace Player
                 transform.position = target;
         }
 
-        private void Goal()
-        {
-            //TODO gravity disappear , maybe status = idle
-            //TODO fire work 
-        }
-
         public void Pause()
         {
             if (_isPause)
