@@ -15,7 +15,7 @@ public class player_ani : MonoBehaviour
     public GameObject playerLine;
     public GameObject lightdown;
     public GameObject fuse;
-    public GameObject triggerObject;
+    public GameObject cameraButton;
     public GameObject map;
     private bool isEnd;
 
@@ -74,6 +74,8 @@ public class player_ani : MonoBehaviour
         gravity.SetActive(false);
         playerData.gravityDirection = Vector2.down;
         playerAni.SetInteger("state", 5);
+
+        cameraButton.SetActive(false);
 
         lightup.SetActive(false);
         lightdown.SetActive(true);
