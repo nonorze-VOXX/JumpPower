@@ -49,6 +49,7 @@ namespace Player
 
         private void Update()
         {
+            // Debug.Log(_rigidbody2D.velocity);
             AddGravity();
             if (!_isPause)
             {
@@ -57,6 +58,7 @@ namespace Player
                 CollideWall();
                 CollideGround();
             }
+            // Debug.Log(_rigidbody2D.velocity);
         }
 
 
@@ -172,8 +174,9 @@ namespace Player
                     if (GetJumpInput()) playerData.status = Status.Focus;
                     break;
                 case Status.Walk:
+                    var isFalling = Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) > 0;
+                    if (isFalling) playerData.status = Status.Jumping;
                     walkInput();
-                    var isCollideGround = CheckCollisionWall(playerData.gravityDirection);
                     if (!Input.GetKey(KeyCode.LeftControl)) playerData.status = Status.Idle;
                     break;
                 case Status.Focus:
