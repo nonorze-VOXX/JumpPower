@@ -1,18 +1,25 @@
 using Player;
+using Player.Camera;
 using UnityEngine;
 
 public class player_ani : MonoBehaviour
 {
     public PlayerData playerData;
+    public CameraData cameraData;
     public SpriteRenderer playerSR;
     public Animator playerAni;
-    private Rigidbody2D playerRig;
     public GameObject gravity;
+    public GameObject endText;
+    public GameObject speedLine;
     public GameObject lightup;
     public GameObject lightdown;
     public GameObject fuse;
     public GameObject triggerObject;
+    public GameObject map;
     private bool isEnd;
+
+    private Rigidbody2D playerRig;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -69,11 +76,21 @@ public class player_ani : MonoBehaviour
 
         lightup.SetActive(false);
         lightdown.SetActive(true);
-        Invoke("gameOver", 2);  
+        Invoke("gameOver", 4);
     }
+
     private void gameOver()
     {
+        cameraData.CameraStatus = CameraStatus.GameEnd;
+        map.SetActive(false);
+        speedLine.SetActive(true);
+        Invoke("GameEndding", 5);
+    }
+
+    private void GameEndding()
+    {
         triggerObject.SetActive(false);
+        endText.SetActive(true);
         Time.timeScale = 0f;
     }
 }

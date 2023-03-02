@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace Player.Camera
 {
+    public enum CameraStatus
+    {
+        GameEnd,
+        Normal
+    }
+
     [CreateAssetMenu(fileName = "cameraData", menuName = "data/CameraData", order = 2)]
     public class CameraData : ScriptableObject
     {
@@ -10,5 +16,6 @@ namespace Player.Camera
         public List<Vector2> cameraLocalList;
         public Vector3 cameraPosition;
         public bool isCameraSpin;
+        public CameraStatus CameraStatus;
     }
 }

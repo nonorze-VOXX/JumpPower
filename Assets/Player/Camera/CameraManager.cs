@@ -21,6 +21,7 @@ namespace Player.Camera
 
         private void Start()
         {
+            cameraData.CameraStatus = CameraStatus.Normal;
             _pastGravity = playerData.gravityDirection;
             GravityToAngle gravityToAngle;
             gravityToAngle.Angle = 0;
@@ -40,13 +41,22 @@ namespace Player.Camera
 
         private void Update()
         {
-            transform.position = cameraData.cameraPosition;
-            if (cameraData.isCameraSpin)
+            switch (cameraData.CameraStatus)
             {
-                if (_spining)
-                    SpinCamera();
-                else
-                    SpinCameraTrigger();
+                case CameraStatus.Normal:
+                    transform.position = cameraData.cameraPosition;
+                    if (cameraData.isCameraSpin)
+                    {
+                        if (_spining)
+                            SpinCamera();
+                        else
+                            SpinCameraTrigger();
+                    }
+
+                    break;
+                case CameraStatus.GameEnd:
+                    transform.position = GameObject.Find("power").transform.position;
+                    break;
             }
         }
 
