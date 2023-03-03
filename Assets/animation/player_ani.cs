@@ -18,6 +18,7 @@ public class player_ani : MonoBehaviour
     public GameObject cameraButton;
     public GameObject map;
     public GameObject music;
+    public GameObject endmusic;
     private float pastVolume;
     private bool isEnd;
 
@@ -78,8 +79,7 @@ public class player_ani : MonoBehaviour
         playerAni.SetInteger("state", 5);
 
         cameraButton.SetActive(false);
-        pastVolume = music.GetComponent<AudioSource>().volume;
-        music.GetComponent<AudioSource>().volume = 0;
+        music.SetActive(false);
 
         lightup.SetActive(false);
         lightdown.SetActive(true);
@@ -93,6 +93,7 @@ public class player_ani : MonoBehaviour
         speedLine.SetActive(true);
         playerLine.SetActive(false);
         Invoke("GameEndding", 5);
+        endmusic.SetActive(true);
     }
 
     private void GameEndding()
