@@ -17,6 +17,8 @@ public class player_ani : MonoBehaviour
     public GameObject fuse;
     public GameObject cameraButton;
     public GameObject map;
+    public GameObject music;
+    private float pastVolume;
     private bool isEnd;
 
     private Rigidbody2D playerRig;
@@ -76,6 +78,8 @@ public class player_ani : MonoBehaviour
         playerAni.SetInteger("state", 5);
 
         cameraButton.SetActive(false);
+        pastVolume = music.GetComponent<AudioSource>().volume;
+        music.GetComponent<AudioSource>().volume = 0;
 
         lightup.SetActive(false);
         lightdown.SetActive(true);
@@ -93,6 +97,8 @@ public class player_ani : MonoBehaviour
 
     private void GameEndding()
     {
+        
+        music.GetComponent<AudioSource>().volume = pastVolume;
         endText.SetActive(true);
         playerData.gravityDirection = transform.parent.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
     }
