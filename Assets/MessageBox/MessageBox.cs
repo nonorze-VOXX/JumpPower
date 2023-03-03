@@ -7,13 +7,14 @@ public class MessageBox : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         triggerObject.SetActive(true);
-        if(triggerObject.name == "firework")
+        if (triggerObject.name == "firework")
         {
             GameObject.Find("power").GetComponent<player_ani>().issEnd();    
         }
+        Invoke("turnOffFirework", 4);
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void turnOffFirework()
     {
         triggerObject.SetActive(false);
     }
