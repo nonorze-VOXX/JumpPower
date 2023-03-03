@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace Player
 {
-    //TODO goal detect
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
