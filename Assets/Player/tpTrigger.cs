@@ -8,5 +8,15 @@ public class tpTrigger : MonoBehaviour
     {
         Tpflag.SetActive(true);
         Tpflag.transform.position = transform.position;
+        Save();
+    }
+
+    private void Save()
+    {
+        var position = transform.position;
+        PlayerPrefs.SetFloat("savePointX", position.x);
+        PlayerPrefs.SetFloat("savePointY", position.y);
+        PlayerPrefs.Save();
+        // PlayerPrefs.DeleteAll();
     }
 }

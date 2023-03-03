@@ -15,26 +15,25 @@ namespace Player
         private RaycastHit2D _raycastHit2D;
         private RaycastHit2D _raycastHit2DDown;
         private Rigidbody2D _rigidbody2D;
-        private float _saveCounter;
 
 
         private void Start()
         {
             _isPause = false;
             _pauseSpeed = Vector2.zero;
-            _saveCounter = 0;
             playerData.powerTime = 0;
             _forceLocal = transform.GetChild(1);
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
-            PlayerPrefs.DeleteAll();
+            // PlayerPrefs.DeleteAll();
             if (PlayerPrefs.GetFloat("savePointX") == 0)
             {
                 //no played
-                PlayerPrefs.SetFloat("savePointX", playerData.playerSafedPosition.x);
-                PlayerPrefs.SetFloat("savePointY", playerData.playerSafedPosition.y);
+                var position = transform.position;
+                PlayerPrefs.SetFloat("savePointX", position.x);
+                PlayerPrefs.SetFloat("savePointY", position.y);
                 PlayerPrefs.Save();
                 transform.position = playerData.playerSafedPosition;
             }
@@ -52,7 +51,6 @@ namespace Player
             AddGravity();
             if (!_isPause)
             {
-                SavePoint();
                 CheckMoveInput();
                 CollideWall();
                 CollideGround();
@@ -60,19 +58,6 @@ namespace Player
             // Debug.Log(_rigidbody2D.velocity);
         }
 
-
-        private void SavePoint()
-        {
-            _saveCounter += Time.deltaTime;
-            if (playerData.status == Status.Idle && _saveCounter > 1)
-            {
-                var position = transform.position;
-                PlayerPrefs.SetFloat("savePointX", position.x);
-                PlayerPrefs.SetFloat("savePointY", position.y);
-                PlayerPrefs.Save();
-                _saveCounter = 0;
-            }
-        }
 
         private void AddGravity()
         {
