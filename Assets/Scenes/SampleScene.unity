@@ -59531,7 +59531,7 @@ MonoBehaviour:
   playerLine: {fileID: 362790623}
   lightdown: {fileID: 770357877}
   fuse: {fileID: 3839111470313249788}
-  cameraButton: {fileID: 0}
+  cameraButton: {fileID: 1042711500}
   map: {fileID: 1915014536}
 --- !u!1 &2015892998
 GameObject:
