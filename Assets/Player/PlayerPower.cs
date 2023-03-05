@@ -5,6 +5,7 @@ namespace Player
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
+        public GameObject tpTriggerContainer;
         public GameObject tpFlag;
 
         private Collider2D _collider2D;
@@ -27,7 +28,7 @@ namespace Player
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
-            // PlayerPrefs.DeleteAll();
+            PlayerPrefs.DeleteAll();
             if (PlayerPrefs.GetFloat("savePointX") == 0)
             {
                 //no played
@@ -153,6 +154,8 @@ namespace Player
             switch (playerData.status)
             {
                 case Status.Idle:
+                    if (GetTiredInput()) GoNextSavePoint();
+
                     teleportInput();
                     if (GetWalkInput()) playerData.status = Status.Walk;
                     if (GetJumpInput()) playerData.status = Status.Focus;
@@ -170,6 +173,33 @@ namespace Player
                     if (_rigidbody2D.velocity == Vector2.zero && !GetJumpInput()) playerData.status = Status.Idle;
                     break;
             }
+        }
+
+        private void GoNextSavePoint()
+        {
+            if (!tpFlag.transform.position.Equals(Vector3.zero))
+            {
+                var flagLocal = 0;
+                for (var i = 0; i < tpTriggerContainer.transform.childCount; i++)
+                {
+                    Vector2 savePoint = tpTriggerContainer.transform.GetChild(i).position;
+                    if (savePoint.Equals(tpFlag.transform.position)) flagLocal = i;
+                }
+
+                if (Input.GetKey(KeyCode.Period))
+                    flagLocal += 1;
+                else
+                    flagLocal -= 1;
+                flagLocal += tpTriggerContainer.transform.childCount;
+                flagLocal %= tpTriggerContainer.transform.childCount;
+                tpFlag.transform.position = tpTriggerContainer.transform.GetChild(flagLocal).position;
+                Tp();
+            }
+        }
+
+        private bool GetTiredInput()
+        {
+            return Input.GetKeyDown(KeyCode.Period) || Input.GetKeyDown(KeyCode.Comma);
         }
 
         private bool GetJumpInput()

@@ -85,7 +85,7 @@ public class player_ani : MonoBehaviour
 
         cameraButton.SetActive(false);
         music.SetActive(false);
-
+        endmusic.SetActive(true);
         lightup.SetActive(false);
         lightdown.SetActive(true);
         Invoke("gameOver", 4);
@@ -98,7 +98,6 @@ public class player_ani : MonoBehaviour
         speedLine.SetActive(true);
         playerLine.SetActive(false);
         Invoke("GameEndding", 5);
-        endmusic.SetActive(true);
     }
 
     private void GameEndding()
