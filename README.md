@@ -11,11 +11,12 @@ team: 【回衝就是現炮】
 遊戲簡介：向著地圖中心的保險絲前進，把保險絲燒斷，達成跳電
 
 玩法說明： 
-```
+``` 
+tutorial
              (A / leftArrow)       left
              (D / rightArrow)    right
              (W / Space)          jump
-             Ctrl +(left / right)   walk
+             ,(comma)/.(period)   walk
              LeftShift                switch jump mode
              P                          go last touched green
 ```
