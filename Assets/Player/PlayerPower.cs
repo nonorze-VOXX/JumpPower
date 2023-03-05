@@ -28,7 +28,7 @@ namespace Player
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
-            PlayerPrefs.DeleteAll();
+            // PlayerPrefs.DeleteAll();
             if (PlayerPrefs.GetFloat("savePointX") == 0)
             {
                 //no played
