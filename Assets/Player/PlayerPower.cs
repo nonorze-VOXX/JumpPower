@@ -5,6 +5,7 @@ namespace Player
     public class PlayerPower : MonoBehaviour
     {
         public PlayerData playerData;
+        public GameObject tpTriggerContainer;
         public GameObject tpFlag;
 
         private Collider2D _collider2D;
@@ -113,14 +114,14 @@ namespace Player
 
         private void walkInput()
         {
-            if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.E))
             {
             }
-            else if (Input.GetKey(KeyCode.A))
+            else if (Input.GetKey(KeyCode.Q))
             {
                 _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
             }
-            else if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(KeyCode.E))
             {
                 _rigidbody2D.velocity = Anticlockwise90deg(playerData.gravityDirection);
             }
@@ -153,15 +154,17 @@ namespace Player
             switch (playerData.status)
             {
                 case Status.Idle:
+                    if (GetTiredInput()) GoNextSavePoint();
+
                     teleportInput();
-                    if (Input.GetKey(KeyCode.LeftControl)) playerData.status = Status.Walk;
+                    if (GetWalkInput()) playerData.status = Status.Walk;
                     if (GetJumpInput()) playerData.status = Status.Focus;
                     break;
                 case Status.Walk:
                     var isFalling = Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) > 0;
                     if (isFalling) playerData.status = Status.Jumping;
                     walkInput();
-                    if (!Input.GetKey(KeyCode.LeftControl)) playerData.status = Status.Idle;
+                    if (!GetWalkInput()) playerData.status = Status.Idle;
                     break;
                 case Status.Focus:
                     focusInput(); // state transition is wrapped in
@@ -172,9 +175,41 @@ namespace Player
             }
         }
 
+        private void GoNextSavePoint()
+        {
+            if (!tpFlag.transform.position.Equals(Vector3.zero))
+            {
+                var flagLocal = 0;
+                for (var i = 0; i < tpTriggerContainer.transform.childCount; i++)
+                {
+                    Vector2 savePoint = tpTriggerContainer.transform.GetChild(i).position;
+                    if (savePoint.Equals(tpFlag.transform.position)) flagLocal = i;
+                }
+
+                if (Input.GetKey(KeyCode.Period))
+                    flagLocal += 1;
+                else
+                    flagLocal -= 1;
+                flagLocal += tpTriggerContainer.transform.childCount;
+                flagLocal %= tpTriggerContainer.transform.childCount;
+                tpFlag.transform.position = tpTriggerContainer.transform.GetChild(flagLocal).position;
+                Tp();
+            }
+        }
+
+        private bool GetTiredInput()
+        {
+            return Input.GetKeyDown(KeyCode.Period) || Input.GetKeyDown(KeyCode.Comma);
+        }
+
         private bool GetJumpInput()
         {
             return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space);
+        }
+
+        private bool GetWalkInput()
+        {
+            return Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E);
         }
 
         private void Jump()

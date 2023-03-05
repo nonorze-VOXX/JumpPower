@@ -11,6 +11,7 @@ public class CameraSpinButton : MonoBehaviour
 
     private void Start()
     {
+        cameraData.isCameraSpin = true;
         var btn = yourButton.GetComponent<Button>();
         btn.onClick.AddListener(TaskOnClick);
         v.SetActive(cameraData.isCameraSpin);
