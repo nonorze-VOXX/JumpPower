@@ -113,14 +113,14 @@ namespace Player
 
         private void walkInput()
         {
-            if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.E))
             {
             }
-            else if (Input.GetKey(KeyCode.A))
+            else if (Input.GetKey(KeyCode.Q))
             {
                 _rigidbody2D.velocity = -Anticlockwise90deg(playerData.gravityDirection);
             }
-            else if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(KeyCode.E))
             {
                 _rigidbody2D.velocity = Anticlockwise90deg(playerData.gravityDirection);
             }
@@ -154,14 +154,14 @@ namespace Player
             {
                 case Status.Idle:
                     teleportInput();
-                    if (Input.GetKey(KeyCode.LeftControl)) playerData.status = Status.Walk;
+                    if (GetWalkInput()) playerData.status = Status.Walk;
                     if (GetJumpInput()) playerData.status = Status.Focus;
                     break;
                 case Status.Walk:
                     var isFalling = Vector2.Dot(_rigidbody2D.velocity, playerData.gravityDirection) > 0;
                     if (isFalling) playerData.status = Status.Jumping;
                     walkInput();
-                    if (!Input.GetKey(KeyCode.LeftControl)) playerData.status = Status.Idle;
+                    if (!GetWalkInput()) playerData.status = Status.Idle;
                     break;
                 case Status.Focus:
                     focusInput(); // state transition is wrapped in
@@ -175,6 +175,11 @@ namespace Player
         private bool GetJumpInput()
         {
             return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space);
+        }
+
+        private bool GetWalkInput()
+        {
+            return Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E);
         }
 
         private void Jump()

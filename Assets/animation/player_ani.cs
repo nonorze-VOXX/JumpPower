@@ -19,8 +19,8 @@ public class player_ani : MonoBehaviour
     public GameObject map;
     public GameObject music;
     public GameObject endmusic;
-    private float pastVolume;
     private bool isEnd;
+    private float pastVolume;
 
     private Rigidbody2D playerRig;
 
@@ -36,10 +36,10 @@ public class player_ani : MonoBehaviour
     {
         if (isEnd == false)
         {
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q))
                 if (playerSR.flipX == false && playerData.status != Status.Jumping)
                     playerSR.flipX = true;
-            if (Input.GetKey(KeyCode.D))
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.E))
                 if (playerSR.flipX && playerData.status != Status.Jumping)
                     playerSR.flipX = false;
 
@@ -60,14 +60,19 @@ public class player_ani : MonoBehaviour
             {
                 if (playerData.powerTime != 0) //Input.GetKey(KeyCode.W))
                     playerAni.SetInteger("state", 2);
-                else if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.LeftControl))
+                else if (Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.Q) && GetWalkInput())
                     playerAni.SetInteger("state", 0);
-                else if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)) && Input.GetKey(KeyCode.LeftControl))
+                else if ((Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.Q)) && GetWalkInput())
                     playerAni.SetInteger("state", 1);
                 else
                     playerAni.SetInteger("state", 0);
             }
         }
+    }
+
+    private bool GetWalkInput()
+    {
+        return Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E);
     }
 
     public void issEnd()
@@ -98,7 +103,6 @@ public class player_ani : MonoBehaviour
 
     private void GameEndding()
     {
-        
         music.GetComponent<AudioSource>().volume = pastVolume;
         endText.SetActive(true);
         playerData.gravityDirection = transform.parent.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
