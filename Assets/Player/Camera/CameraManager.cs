@@ -18,6 +18,7 @@ namespace Player.Camera
         private readonly List<GravityToAngle> _gravityToAngle = new();
         private Vector2 _pastGravity;
         private bool _spining;
+        private Vector3 spinDirection;
 
         private void Start()
         {
@@ -72,7 +73,7 @@ namespace Player.Camera
                     if (Math.Abs(gta.Angle % 360 - transform.rotation.eulerAngles.z % 360) > 0.1)
                     {
                         var rotation = transform.rotation;
-                        rotation = Quaternion.Euler(0, 0, rotation.eulerAngles.z + 1);
+                        rotation = Quaternion.Euler(0, 0, rotation.eulerAngles.z + spinDirection.z);
                         transform.rotation = rotation;
                     }
                     else
@@ -88,6 +89,7 @@ namespace Player.Camera
             if (playerData.gravityDirection != _pastGravity)
             {
                 _spining = true;
+                spinDirection = Vector3.Cross(_pastGravity, playerData.gravityDirection);
                 player.GetComponent<PlayerPower>().Pause();
             }
 
