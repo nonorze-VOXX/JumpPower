@@ -1,3 +1,4 @@
+using Player;
 using Player.save;
 using UnityEngine;
 
@@ -14,8 +15,11 @@ public class tpTrigger : MonoBehaviour
 
     private void Save()
     {
-        var position = transform.position;
-        SaveManager.SetSavePosition(position);
-        SaveManager.Save();
+        if (PlayCase.saveCase == SaveCase.onlyTpTrigger)
+        {
+            var position = transform.position;
+            SaveManager.SetSavePosition(position);
+            SaveManager.Save();
+        }
     }
 }

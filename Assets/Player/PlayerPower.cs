@@ -30,7 +30,6 @@ namespace Player
             playerData.status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
             SaveManager.Load();
-
             var savedPosition = SaveManager.GetSavePosition();
             if (savedPosition.Equals(Vector2.zero))
             {
@@ -153,6 +152,15 @@ namespace Player
             {
                 case Status.Idle:
                     if (GetTiredInput()) GoNextSavePoint();
+
+                    switch (PlayCase.saveCase)
+                    {
+                        case SaveCase.AnyWhere:
+
+                            SaveManager.SetSavePosition(transform.position);
+                            SaveManager.Save();
+                            break;
+                    }
 
                     teleportInput();
                     if (GetWalkInput()) playerData.status = Status.Walk;
