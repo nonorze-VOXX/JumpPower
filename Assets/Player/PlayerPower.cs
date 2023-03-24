@@ -1,3 +1,4 @@
+using Player.save;
 using UnityEngine;
 
 namespace Player
@@ -28,21 +29,18 @@ namespace Player
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
             playerData.gravityDirection = Vector2.down;
-            PlayerPrefs.DeleteAll();
-            if (PlayerPrefs.GetFloat("savePointX") == 0)
+            SaveManager.Load();
+
+            var savedPosition = SaveManager.GetSavePosition();
+            if (savedPosition.Equals(Vector2.zero))
             {
-                //no played
-                var position = transform.position;
-                PlayerPrefs.SetFloat("savePointX", position.x);
-                PlayerPrefs.SetFloat("savePointY", position.y);
-                PlayerPrefs.Save();
                 transform.position = playerData.playerSafedPosition;
+                SaveManager.SetSavePosition(playerData.playerSafedPosition);
+                SaveManager.Save();
             }
             else
             {
-                //played
-                var position = new Vector2(PlayerPrefs.GetFloat("savePointX"), PlayerPrefs.GetFloat("savePointY"));
-                transform.position = position;
+                transform.position = SaveManager.GetSavePosition();
             }
         }
 
