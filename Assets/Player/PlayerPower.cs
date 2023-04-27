@@ -8,6 +8,7 @@ namespace Player
         public PlayerData playerData;
         public GameObject tpTriggerContainer;
         public GameObject tpFlag;
+        public GameObject Goal;
 
         private Collider2D _collider2D;
         private Vector2 _direction;
@@ -46,7 +47,7 @@ namespace Player
         private void Update()
         {
             // Debug.Log(_rigidbody2D.velocity);
-            AddGravity();
+            GravityManager();
             if (!_isPause)
             {
                 CheckMoveInput();
@@ -54,6 +55,39 @@ namespace Player
                 CollideGround();
             }
             // Debug.Log(_rigidbody2D.velocity);
+        }
+
+        private void GravityManager()
+        {
+            playerData.gravityDirection =  GetNowGravity();
+            AddGravity();
+        }
+
+        private Vector2 GetNowGravity()
+        {
+            var delta = Goal.transform.position - transform.position;
+            if (delta.x - delta.y > 0)
+            {
+                if (delta.x + delta.y > 0)
+                {
+                    return Vector2.left;
+                }
+                else
+                {
+                    return Vector2.up;
+                }
+            }
+            else
+            {
+                if (delta.x + delta.y > 0)
+                {
+                    return Vector2.down;
+                }
+                else
+                {
+                    return Vector2.right;
+                }
+            }
         }
 
 

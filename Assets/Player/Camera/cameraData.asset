@@ -39,5 +39,6 @@ MonoBehaviour:
   - {x: 25.525, y: 45.945}
   - {x: 35.735, y: 45.945}
   - {x: 45.945, y: 45.945}
-  nowCameraLocal: 13
-  switchWidth: 0.2
+  cameraPosition: {x: 35.735, y: 15.315001, z: -10}
+  isCameraSpin: 1
+  CameraStatus: 1

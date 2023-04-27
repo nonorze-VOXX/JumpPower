@@ -75,6 +75,7 @@ namespace Player.Camera
                         var rotation = transform.rotation;
                         rotation = Quaternion.Euler(0, 0, rotation.eulerAngles.z + spinDirection.z);
                         transform.rotation = rotation;
+                        Debug.Log( spinDirection.z );
                     }
                     else
                     {
@@ -90,6 +91,12 @@ namespace Player.Camera
             {
                 _spining = true;
                 spinDirection = Vector3.Cross(_pastGravity, playerData.gravityDirection);
+                
+                // if player from left Gravity to right Gravity need this if
+                if (spinDirection.z == 0)
+                {
+                    spinDirection.z = 1;
+                }
                 player.GetComponent<PlayerPower>().Pause();
             }
 
