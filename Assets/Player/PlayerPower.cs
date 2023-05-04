@@ -37,6 +37,7 @@ namespace Player
                 transform.position = playerData.playerSafedPosition;
                 SaveManager.SetSavePosition(playerData.playerSafedPosition);
                 SaveManager.Save();
+                playerData.isEnd = false;
             }
             else
             {
@@ -60,7 +61,10 @@ namespace Player
 
         private void GravityManager()
         {
-            playerData.gravityDirection =  GetNowGravity();
+            if (!playerData.isEnd)
+            {
+                playerData.gravityDirection =  GetNowGravity();
+            }
             AddGravity();
         }
 
@@ -69,14 +73,11 @@ namespace Player
             var delta = Goal.transform.position - transform.position;
             if (delta.x - delta.y > 0)
             {
-                if (delta.x + delta.y > 0)
+                return (delta.x + delta.y) switch
                 {
-                    return Vector2.left;
-                }
-                else
-                {
-                    return Vector2.up;
-                }
+                    > 0 => Vector2.left,
+                    _ => Vector2.up
+                };
             }
             else
             {

@@ -26,7 +26,6 @@ public class player_ani : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        playerData.isEnd = false;
         playerRig = gameObject.transform.parent.gameObject.GetComponent<Rigidbody2D>();
     }
 
