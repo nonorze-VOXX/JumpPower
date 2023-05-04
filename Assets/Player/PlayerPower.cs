@@ -29,11 +29,11 @@ namespace Player
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
-            playerData.gravityDirection = Vector2.down;
             SaveManager.Load();
             var savedPosition = SaveManager.GetSavePosition();
             if (savedPosition.Equals(Vector2.zero))
             {
+                playerData.gravityDirection = Vector2.down;
                 transform.position = playerData.playerSafedPosition;
                 SaveManager.SetSavePosition(playerData.playerSafedPosition);
                 SaveManager.Save();
@@ -54,6 +54,7 @@ namespace Player
                 CollideWall();
                 CollideGround();
             }
+
             // Debug.Log(_rigidbody2D.velocity);
         }
 
@@ -191,8 +192,16 @@ namespace Player
                     {
                         case SaveCase.AnyWhere:
 
-                            SaveManager.SetSavePosition(transform.position);
-                            SaveManager.Save();
+                            if (!playerData.isEnd)
+                            {
+                                SaveManager.SetSavePosition(transform.position);
+                                SaveManager.Save();
+                            }
+                            else
+                            {
+                                SaveManager.SetSavePosition(Vector2.zero);
+                                SaveManager.Save();
+                            }
                             break;
                     }
 

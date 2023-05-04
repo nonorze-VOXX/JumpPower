@@ -38,6 +38,19 @@ namespace Player.Camera
             gravityToAngle.Dir = Vector2.left;
             _gravityToAngle.Add(gravityToAngle);
             _spining = false;
+            if (cameraData.isCameraSpin)
+            {
+                foreach (var gta in _gravityToAngle)
+                {
+                    if (gta.Dir == playerData.gravityDirection)
+                    {
+                        Debug.Log(gta.Dir);
+                        Debug.Log(playerData.gravityDirection);
+                        Debug.Log(gta.Angle);
+                        transform.rotation = Quaternion.Euler(0, 0,gta.Angle  );
+                    }
+                }
+            }
         }
 
         private void Update()
@@ -75,7 +88,6 @@ namespace Player.Camera
                         var rotation = transform.rotation;
                         rotation = Quaternion.Euler(0, 0, rotation.eulerAngles.z + spinDirection.z);
                         transform.rotation = rotation;
-                        Debug.Log( spinDirection.z );
                     }
                     else
                     {

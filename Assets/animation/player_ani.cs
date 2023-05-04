@@ -1,5 +1,6 @@
 using Player;
 using Player.Camera;
+using Player.save;
 using UnityEngine;
 
 public class player_ani : MonoBehaviour
@@ -8,7 +9,6 @@ public class player_ani : MonoBehaviour
     public CameraData cameraData;
     public SpriteRenderer playerSR;
     public Animator playerAni;
-    public GameObject gravity;
     public GameObject endText;
     public GameObject speedLine;
     public GameObject lightup;
@@ -19,7 +19,6 @@ public class player_ani : MonoBehaviour
     public GameObject map;
     public GameObject music;
     public GameObject endmusic;
-    private bool isEnd;
     private float pastVolume;
 
     private Rigidbody2D playerRig;
@@ -27,14 +26,14 @@ public class player_ani : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        isEnd = false;
+        playerData.isEnd = false;
         playerRig = gameObject.transform.parent.gameObject.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     private void Update()
     {
-        if (isEnd == false)
+        if (playerData.isEnd == false)
         {
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q))
                 if (playerSR.flipX == false && playerData.status != Status.Jumping)
@@ -77,9 +76,9 @@ public class player_ani : MonoBehaviour
 
     public void issEnd()
     {
-        isEnd = true;
+        playerData.isEnd = true;
         fuse.gameObject.SetActive(false);
-        gravity.SetActive(false);
+        // gravity.SetActive(false);
         playerData.gravityDirection = Vector2.down;
         playerAni.SetInteger("state", 5);
 

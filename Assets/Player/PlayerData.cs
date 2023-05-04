@@ -13,6 +13,7 @@ namespace Player
     [CreateAssetMenu(fileName = "Data", menuName = "data/player", order = 1)]
     public class PlayerData : ScriptableObject
     {
+        public bool isEnd;
         public Vector2 playerSafedPosition;
         public float angleMax;
         public float angleMin;
