@@ -5,10 +5,9 @@ namespace Player.save
 {
     public class JumpPowerSaver
     {
+        private readonly string savePath = Application.persistentDataPath + "/save.json";
         [SerializeField] private JumpPowerSaveData _saveData;
         public PlayerData playerData;
-
-        private readonly string savePath = Application.persistentDataPath + "/save.json";
 
         public JumpPowerSaver()
         {
