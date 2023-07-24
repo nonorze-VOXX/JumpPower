@@ -22,6 +22,7 @@ namespace Player
 
         private void Start()
         {
+            Debug.Log(Application.persistentDataPath);
             _isPause = false;
             _pauseSpeed = Vector2.zero;
             playerData.powerTime = 0;

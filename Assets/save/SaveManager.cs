@@ -12,12 +12,12 @@ namespace Player.save
 
         public static void SetSavePosition(Vector2 position)
         {
-            _saveData.position = position;
+            _saveData.jumpPowerSaveData.position = position;
         }
 
         public static Vector2 GetSavePosition()
         {
-            return _saveData.position;
+            return _saveData.jumpPowerSaveData.position;
         }
 
         public static void Save()
@@ -48,11 +48,18 @@ namespace Player.save
             saveJson = File.ReadAllText(savePath);
             _saveData = JsonUtility.FromJson<SaveData>(saveJson);
         }
-    }
 
-    [Serializable]
-    public class SaveData
-    {
-        public Vector2 position;
+        [Serializable]
+        public class SaveData
+        {
+            public JumpPowerSaveData jumpPowerSaveData;
+        }
+
+        [Serializable]
+        public class JumpPowerSaveData
+        {
+            public Vector2 position;
+            //last savePoint position
+        }
     }
 }
