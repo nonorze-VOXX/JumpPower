@@ -3,7 +3,7 @@ using Player.save;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class NewGame : MonoBehaviour
+public class TitleManager : MonoBehaviour
 {
     public PlayerData playerData;
 
@@ -17,11 +17,25 @@ public class NewGame : MonoBehaviour
     {
     }
 
-    public void Click()
+    public void Continue()
     {
+        var jumpPowerSaver = new JumpPowerSaver();
+        playerData.savedPosition = jumpPowerSaver.GetSavePosition();
+        SceneManager.LoadScene("JumpPower");
+    }
+
+    public void NewGame()
+    {
+        playerData.gravityDirection = Vector2.down;
         playerData.savedPosition = playerData.playerInitPosition;
         var jumpPowerSaver = new JumpPowerSaver();
         jumpPowerSaver.SetSavePosition(playerData.playerInitPosition);
         SceneManager.LoadScene("JumpPower");
+    }
+
+    public void QuitGame()
+    {
+        Debug.Log("QUIT!");
+        Application.Quit();
     }
 }
