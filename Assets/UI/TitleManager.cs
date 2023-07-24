@@ -19,7 +19,7 @@ public class TitleManager : MonoBehaviour
 
     public void Continue()
     {
-        var jumpPowerSaver = new JumpPowerSaver();
+        var jumpPowerSaver = new JumpPowerSaver(playerData);
         playerData.savedPosition = jumpPowerSaver.GetSavePosition();
         SceneManager.LoadScene("JumpPower");
     }

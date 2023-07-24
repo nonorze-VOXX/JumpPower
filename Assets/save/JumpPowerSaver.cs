@@ -20,6 +20,23 @@ namespace Player.save
             playerData = _playerData;
         }
 
+        public void SaveGravity()
+        {
+            _saveData.gravityDir = playerData.gravityDirection;
+            SaveManager.Save(_saveData, savePath);
+        }
+
+        public void LoadGravity()
+        {
+            playerData.gravityDirection = SaveManager.Load<JumpPowerSaveData>(savePath).gravityDir;
+        }
+
+        public void SaveData(Vector2 position)
+        {
+            SetSavePosition(position);
+            SaveGravity();
+        }
+
         public void SetSavePosition(Vector2 position)
         {
             _saveData.position = position;
@@ -42,11 +59,8 @@ namespace Player.save
         public class JumpPowerSaveData
         {
             public Vector2 position;
+            public Vector2 gravityDir;
 
-            public JumpPowerSaveData()
-            {
-                position = Vector2.zero;
-            }
             //last savePoint position
         }
     }

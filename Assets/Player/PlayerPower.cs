@@ -33,12 +33,13 @@ namespace Player
             playerData.status = Status.Jumping;
             jumpPowerSaver = new JumpPowerSaver(playerData);
             transform.position = playerData.savedPosition;
-            transform.position = jumpPowerSaver.GetSavePosition();
             if (playerData.isEnd)
             {
                 playerData.isEnd = false;
-                jumpPowerSaver.SetSavePosition(playerData.playerInitPosition);
+                jumpPowerSaver.SaveData(playerData.playerInitPosition);
             }
+
+            jumpPowerSaver.LoadGravity();
         }
 
         private void Update()
@@ -178,9 +179,9 @@ namespace Player
                         case SaveCase.AnyWhere:
 
                             if (!playerData.isEnd)
-                                jumpPowerSaver.SetSavePosition(transform.position);
+                                jumpPowerSaver.SaveData(transform.position);
                             else
-                                jumpPowerSaver.SetSavePosition(Vector2.zero);
+                                jumpPowerSaver.SaveData(Vector2.zero);
                             break;
                     }
 

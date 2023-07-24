@@ -22,7 +22,6 @@ namespace Player.Camera
 
         private void Start()
         {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
             cameraData.CameraStatus = CameraStatus.Normal;
             _pastGravity = playerData.gravityDirection;
             GravityToAngle gravityToAngle;
