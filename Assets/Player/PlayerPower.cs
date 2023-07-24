@@ -18,6 +18,7 @@ namespace Player
         private RaycastHit2D _raycastHit2D;
         private RaycastHit2D _raycastHit2DDown;
         private Rigidbody2D _rigidbody2D;
+        private JumpPowerSaver jumpPowerSaver;
 
 
         private void Start()
@@ -30,11 +31,12 @@ namespace Player
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
-            transform.position = JumpPowerSaver.GetSavePosition();
+            jumpPowerSaver = new JumpPowerSaver(playerData);
+            transform.position = jumpPowerSaver.GetSavePosition();
             if (playerData.isEnd)
             {
                 playerData.isEnd = false;
-                JumpPowerSaver.SetSavePosition(playerData.playerInitPosition);
+                jumpPowerSaver.SetSavePosition(playerData.playerInitPosition);
             }
         }
 
@@ -175,9 +177,9 @@ namespace Player
                         case SaveCase.AnyWhere:
 
                             if (!playerData.isEnd)
-                                JumpPowerSaver.SetSavePosition(transform.position);
+                                jumpPowerSaver.SetSavePosition(transform.position);
                             else
-                                JumpPowerSaver.SetSavePosition(Vector2.zero);
+                                jumpPowerSaver.SetSavePosition(Vector2.zero);
                             break;
                     }
 

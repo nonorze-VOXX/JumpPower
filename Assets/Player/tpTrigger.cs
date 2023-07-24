@@ -18,7 +18,8 @@ public class tpTrigger : MonoBehaviour
         if (PlayCase.saveCase == SaveCase.onlyTpTrigger)
         {
             var position = transform.position;
-            JumpPowerSaver.SetSavePosition(position);
+            var saver = new JumpPowerSaver();
+            saver.SetSavePosition(position);
         }
     }
 }

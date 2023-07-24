@@ -21,11 +21,10 @@ namespace Player.save
             catch (FileNotFoundException)
             {
                 var f = File.Open(path, FileMode.Create);
-                Save(new T(), path);
                 f.Close();
+                Save(new T(), path);
             }
 
-            saveJson = File.ReadAllText(path);
             return JsonUtility.FromJson<T>(saveJson);
         }
     }

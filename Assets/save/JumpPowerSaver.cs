@@ -3,27 +3,34 @@ using UnityEngine;
 
 namespace Player.save
 {
-    public class JumpPowerSaver : MonoBehaviour
+    public class JumpPowerSaver
     {
-        [SerializeField] private static JumpPowerSaveData _saveData;
+        [SerializeField] private JumpPowerSaveData _saveData;
+        public PlayerData playerData;
 
-        private static readonly string savePath = Application.persistentDataPath + "/save.json";
-        public static PlayerData playerData;
+        private readonly string savePath = Application.persistentDataPath + "/save.json";
 
-        static JumpPowerSaver()
+        public JumpPowerSaver()
         {
             _saveData = new JumpPowerSaveData();
         }
 
-        public static void SetSavePosition(Vector2 position)
+        public JumpPowerSaver(PlayerData _playerData)
+        {
+            _saveData = new JumpPowerSaveData();
+            playerData = _playerData;
+        }
+
+        public void SetSavePosition(Vector2 position)
         {
             _saveData.position = position;
             SaveManager.Save(_saveData, savePath);
         }
 
-        public static Vector2 GetSavePosition()
+        public Vector2 GetSavePosition()
         {
             var tmp = SaveManager.Load<JumpPowerSaveData>(savePath);
+            Debug.Log(tmp);
             if (tmp == null)
                 SetSavePosition(playerData.playerInitPosition);
             else
