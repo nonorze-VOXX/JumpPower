@@ -39,18 +39,12 @@ namespace Player.Camera
             _gravityToAngle.Add(gravityToAngle);
             _spining = false;
             if (cameraData.isCameraSpin)
-            {
                 foreach (var gta in _gravityToAngle)
-                {
                     if (gta.Dir == playerData.gravityDirection)
-                    {
-                        Debug.Log(gta.Dir);
-                        Debug.Log(playerData.gravityDirection);
-                        Debug.Log(gta.Angle);
-                        transform.rotation = Quaternion.Euler(0, 0,gta.Angle  );
-                    }
-                }
-            }
+                        // Debug.Log(gta.Dir);
+                        // Debug.Log(playerData.gravityDirection);
+                        // Debug.Log(gta.Angle);
+                        transform.rotation = Quaternion.Euler(0, 0, gta.Angle);
         }
 
         private void Update()
@@ -103,12 +97,9 @@ namespace Player.Camera
             {
                 _spining = true;
                 spinDirection = Vector3.Cross(_pastGravity, playerData.gravityDirection);
-                
+
                 // if player from left Gravity to right Gravity need this if
-                if (spinDirection.z == 0)
-                {
-                    spinDirection.z = 1;
-                }
+                if (spinDirection.z == 0) spinDirection.z = 1;
                 player.GetComponent<PlayerPower>().Pause();
             }
 

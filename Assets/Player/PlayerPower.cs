@@ -30,19 +30,11 @@ namespace Player
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
-            SaveManager.Load();
-            var savedPosition = SaveManager.GetSavePosition();
-            if (savedPosition.Equals(Vector2.zero))
+            transform.position = JumpPowerSaver.GetSavePosition();
+            if (playerData.isEnd)
             {
-                playerData.gravityDirection = Vector2.down;
-                transform.position = playerData.playerSafedPosition;
-                SaveManager.SetSavePosition(playerData.playerSafedPosition);
-                SaveManager.Save();
                 playerData.isEnd = false;
-            }
-            else
-            {
-                transform.position = SaveManager.GetSavePosition();
+                JumpPowerSaver.SetSavePosition(playerData.playerInitPosition);
             }
         }
 
@@ -62,10 +54,7 @@ namespace Player
 
         private void GravityManager()
         {
-            if (!playerData.isEnd)
-            {
-                playerData.gravityDirection =  GetNowGravity();
-            }
+            if (!playerData.isEnd) playerData.gravityDirection = GetNowGravity();
             AddGravity();
         }
 
@@ -73,24 +62,15 @@ namespace Player
         {
             var delta = Goal.transform.position - transform.position;
             if (delta.x - delta.y > 0)
-            {
                 return (delta.x + delta.y) switch
                 {
                     > 0 => Vector2.left,
                     _ => Vector2.up
                 };
-            }
-            else
-            {
-                if (delta.x + delta.y > 0)
-                {
-                    return Vector2.down;
-                }
-                else
-                {
-                    return Vector2.right;
-                }
-            }
+
+            if (delta.x + delta.y > 0)
+                return Vector2.down;
+            return Vector2.right;
         }
 
 
@@ -195,15 +175,9 @@ namespace Player
                         case SaveCase.AnyWhere:
 
                             if (!playerData.isEnd)
-                            {
-                                SaveManager.SetSavePosition(transform.position);
-                                SaveManager.Save();
-                            }
+                                JumpPowerSaver.SetSavePosition(transform.position);
                             else
-                            {
-                                SaveManager.SetSavePosition(Vector2.zero);
-                                SaveManager.Save();
-                            }
+                                JumpPowerSaver.SetSavePosition(Vector2.zero);
                             break;
                     }
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player
 {
@@ -14,7 +15,10 @@ namespace Player
     public class PlayerData : ScriptableObject
     {
         public bool isEnd;
-        public Vector2 playerSafedPosition;
+
+        [FormerlySerializedAs("playerSafedPosition")]
+        public Vector2 playerInitPosition;
+
         public float angleMax;
         public float angleMin;
 
@@ -42,6 +46,8 @@ namespace Player
         public bool freeAngle;
 
         public Status status;
+
         // public Status cameraSpinStatus;
+        public Vector2 savedPosition;
     }
 }

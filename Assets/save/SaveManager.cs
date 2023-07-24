@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using UnityEngine;
 
@@ -6,60 +5,28 @@ namespace Player.save
 {
     public class SaveManager : MonoBehaviour
     {
-        [SerializeField] private static SaveData _saveData = new();
-
-        private static readonly string savePath = Application.persistentDataPath + "/save.json";
-
-        public static void SetSavePosition(Vector2 position)
+        public static void Save<T>(T saveData, string path)
         {
-            _saveData.jumpPowerSaveData.position = position;
+            var saveJson = JsonUtility.ToJson(saveData);
+            File.WriteAllText(path, saveJson);
         }
 
-        public static Vector2 GetSavePosition()
-        {
-            return _saveData.jumpPowerSaveData.position;
-        }
-
-        public static void Save()
-        {
-            var saveJson = JsonUtility.ToJson(_saveData);
-            File.WriteAllText(savePath, saveJson);
-        }
-
-        public static void Load()
+        public static T Load<T>(string path) where T : new()
         {
             var saveJson = "";
             try
             {
-                saveJson = File.ReadAllText(savePath);
+                saveJson = File.ReadAllText(path);
             }
             catch (FileNotFoundException)
             {
-                var f = File.Open(savePath, FileMode.Create);
+                var f = File.Open(path, FileMode.Create);
+                Save(new T(), path);
                 f.Close();
             }
 
-            if (saveJson.Length == 0)
-            {
-                SetSavePosition(Vector2.zero);
-                Save();
-            }
-
-            saveJson = File.ReadAllText(savePath);
-            _saveData = JsonUtility.FromJson<SaveData>(saveJson);
-        }
-
-        [Serializable]
-        public class SaveData
-        {
-            public JumpPowerSaveData jumpPowerSaveData;
-        }
-
-        [Serializable]
-        public class JumpPowerSaveData
-        {
-            public Vector2 position;
-            //last savePoint position
+            saveJson = File.ReadAllText(path);
+            return JsonUtility.FromJson<T>(saveJson);
         }
     }
 }
