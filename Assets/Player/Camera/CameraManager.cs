@@ -85,6 +85,7 @@ namespace Player.Camera
                     }
                     else
                     {
+                        _pastGravity = playerData.gravityDirection;
                         _spining = false;
                         player.GetComponent<PlayerPower>().Pause();
                     }
@@ -102,8 +103,6 @@ namespace Player.Camera
                 if (spinDirection.z == 0) spinDirection.z = 1;
                 player.GetComponent<PlayerPower>().Pause();
             }
-
-            _pastGravity = playerData.gravityDirection;
         }
     }
 }

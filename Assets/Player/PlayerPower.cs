@@ -32,7 +32,16 @@ namespace Player
             _collider2D = GetComponent<Collider2D>();
             playerData.status = Status.Jumping;
             jumpPowerSaver = new JumpPowerSaver(playerData);
-            transform.position = playerData.savedPosition;
+            if (playerData.savedPosition == Vector2.zero)
+            {
+                transform.position = playerData.playerInitPosition;
+                playerData.gravityDirection = Vector2.down;
+            }
+            else
+            {
+                transform.position = playerData.savedPosition;
+            }
+
             if (playerData.isEnd)
             {
                 playerData.isEnd = false;
