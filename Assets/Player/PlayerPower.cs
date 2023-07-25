@@ -39,6 +39,7 @@ namespace Player
             }
             else
             {
+                playerData.savedPosition = jumpPowerSaver.GetSavePosition();
                 transform.position = playerData.savedPosition;
             }
 
