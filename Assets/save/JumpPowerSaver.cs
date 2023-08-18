@@ -61,6 +61,10 @@ namespace Player.save
             public Vector2 position;
             public Vector2 gravityDir;
 
+            public string SaveName()
+            {
+                return "JumpPowerSaveData";
+            }
             //last savePoint position
         }
     }
