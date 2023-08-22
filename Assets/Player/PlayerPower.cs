@@ -44,7 +44,6 @@ namespace Player
 
         private void Update()
         {
-            // Debug.Log(_rigidbody2D.velocity);
             GravityManager();
             if (!_isPause)
             {
@@ -52,8 +51,6 @@ namespace Player
                 CollideWall();
                 CollideGround();
             }
-
-            // Debug.Log(_rigidbody2D.velocity);
         }
 
         private void GravityManager()
@@ -126,8 +123,8 @@ namespace Player
 
         private void teleportInput()
         {
-            if (Input.GetKey(KeyCode.P))
-                Tp();
+            // if (Input.GetKey(KeyCode.P))
+            //     Tp();
         }
 
         private void walkInput()
@@ -179,9 +176,14 @@ namespace Player
                         case SaveCase.AnyWhere:
 
                             if (!playerData.isEnd)
+                            {
                                 jumpPowerSaver.SaveData(transform.position);
+                            }
                             else
+                            {
                                 jumpPowerSaver.SaveData(Vector2.zero);
+                            }
+
                             break;
                     }
 
@@ -206,24 +208,24 @@ namespace Player
 
         private void GoNextSavePoint()
         {
-            if (!tpFlag.transform.position.Equals(Vector3.zero))
-            {
-                var flagLocal = 0;
-                for (var i = 0; i < tpTriggerContainer.transform.childCount; i++)
-                {
-                    Vector2 savePoint = tpTriggerContainer.transform.GetChild(i).position;
-                    if (savePoint.Equals(tpFlag.transform.position)) flagLocal = i;
-                }
-
-                if (Input.GetKey(KeyCode.Period))
-                    flagLocal += 1;
-                else
-                    flagLocal -= 1;
-                flagLocal += tpTriggerContainer.transform.childCount;
-                flagLocal %= tpTriggerContainer.transform.childCount;
-                tpFlag.transform.position = tpTriggerContainer.transform.GetChild(flagLocal).position;
-                Tp();
-            }
+            // if (!tpFlag.transform.position.Equals(Vector3.zero))
+            // {
+            //     var flagLocal = 0;
+            //     for (var i = 0; i < tpTriggerContainer.transform.childCount; i++)
+            //     {
+            //         Vector2 savePoint = tpTriggerContainer.transform.GetChild(i).position;
+            //         if (savePoint.Equals(tpFlag.transform.position)) flagLocal = i;
+            //     }
+            //
+            //     if (Input.GetKey(KeyCode.Period))
+            //         flagLocal += 1;
+            //     else
+            //         flagLocal -= 1;
+            //     flagLocal += tpTriggerContainer.transform.childCount;
+            //     flagLocal %= tpTriggerContainer.transform.childCount;
+            //     tpFlag.transform.position = tpTriggerContainer.transform.GetChild(flagLocal).position;
+            //     Tp();
+            // }
         }
 
         private bool GetTiredInput()
