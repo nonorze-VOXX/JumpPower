@@ -14,7 +14,7 @@ public class ForceLocal : MonoBehaviour
     {
         playerData.freeAngle = false;
         playerData.angle = 0f;
-        angleSpeed = 10f;
+        angleSpeed = playerData.angleSpeed;
         _containerTransform = transform.parent;
         playerData.angleLockA = playerData.nowGravityAngleLockA = -60;
         playerData.angleLockD = playerData.nowGravityAngleLockD = -120;
