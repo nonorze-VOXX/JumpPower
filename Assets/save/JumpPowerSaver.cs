@@ -18,6 +18,7 @@ namespace Player.save
         {
             _saveData = new JumpPowerSaveData();
             playerData = _playerData;
+            _playerData.savedPosition = GetSavePosition();
         }
 
         public void SaveGravity()
@@ -47,10 +48,16 @@ namespace Player.save
         {
             var tmp = SaveManager.Load<JumpPowerSaveData>(savePath);
             Debug.Log(tmp);
-            if (tmp == null)
+            if (tmp == null || tmp.position == Vector2.zero)
+            {
+                Debug.Log(tmp);
+                Debug.Log(playerData);
                 SetSavePosition(playerData.playerInitPosition);
+            }
             else
+            {
                 _saveData = tmp;
+            }
 
             return _saveData.position;
         }
