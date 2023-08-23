@@ -79,14 +79,12 @@ namespace Player.Camera
                 {
                     if (Math.Abs(gta.Angle % 360 - transform.rotation.eulerAngles.z % 360) > 0.1)
                     {
-                        float trash = 1.0f;
-                        float speed = 0.02f;
-                        var newAngle = Mathf.SmoothDamp(transform.rotation.eulerAngles.z, gta.Angle, ref trash, speed);
-                        if (Mathf.Abs(newAngle - gta.Angle) < 2)
-                        {
-                            newAngle = gta.Angle;
-                        }
-                        transform.rotation =  Quaternion.Euler(0, 0, newAngle);
+                        var trash = 1.0f;
+                        var speed = cameraData.spinSpeed;
+                        // var newAngle = Mathf.SmoothDamp(transform.rotation.eulerAngles.z, gta.Angle, ref trash, speed);
+                        var newAngle = Mathf.SmoothStep(transform.rotation.eulerAngles.z, gta.Angle, speed);
+                        if (Mathf.Abs(newAngle - gta.Angle) < 2) newAngle = gta.Angle;
+                        transform.rotation = Quaternion.Euler(0, 0, newAngle);
                     }
                     else
                     {
