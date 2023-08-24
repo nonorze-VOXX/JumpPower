@@ -1,1 +1,6 @@
 a fan will push player to  a range
+remove space push button
+fix slide bar move by keyboard
+fix map layer problem
+fix walk through blue line camera spin will no work problem
+check needCheck branch
