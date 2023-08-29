@@ -17,6 +17,8 @@ namespace Player.Camera
         public GameObject player;
         private readonly List<GravityToAngle> _gravityToAngle = new();
         private Vector2 _pastGravity;
+        private Quaternion _pastQuaternion;
+        private float _spinCounter;
         private bool _spining;
         private Vector3 spinDirection;
 
@@ -82,9 +84,11 @@ namespace Player.Camera
                         var trash = 1.0f;
                         var speed = cameraData.spinSpeed;
                         // var newAngle = Mathf.SmoothDamp(transform.rotation.eulerAngles.z, gta.Angle, ref trash, speed);
-                        var newAngle = Mathf.SmoothStep(transform.rotation.eulerAngles.z, gta.Angle, speed);
-                        if (Mathf.Abs(newAngle - gta.Angle) < 2) newAngle = gta.Angle;
-                        transform.rotation = Quaternion.Euler(0, 0, newAngle);
+                        var targetAngle = Quaternion.Euler(0, 0, gta.Angle);
+                        var newAngle = Quaternion.Slerp(_pastQuaternion, targetAngle, _spinCounter);
+                        _spinCounter += Time.deltaTime;
+                        if (Mathf.Abs(newAngle.eulerAngles.z - gta.Angle) < 2) newAngle = targetAngle;
+                        transform.rotation = newAngle;
                     }
                     else
                     {
@@ -104,6 +108,8 @@ namespace Player.Camera
                 // if player from left Gravity to right Gravity need this if
                 if (spinDirection.z == 0) spinDirection.z = 1;
                 player.GetComponent<PlayerPower>().Pause();
+                _pastQuaternion = transform.rotation;
+                _spinCounter = 0;
             }
 
             _pastGravity = playerData.gravityDirection;
