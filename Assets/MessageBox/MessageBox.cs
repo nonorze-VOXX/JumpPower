@@ -9,9 +9,15 @@ public class MessageBox : MonoBehaviour
     {
         if (triggerObject.name == "HiddenWall")
         {
+            bool achieved;
+            SteamUserStats.GetAchievement("Dream", out achieved);
+            if (!achieved)
+            {
+                SteamUserStats.SetAchievement("Dream");
+                SteamUserStats.StoreStats();
+            }
+
             triggerObject.SetActive(false);
-            SteamUserStats.SetAchievement("Dream");
-            SteamUserStats.StoreStats();
             Destroy(this);
         }
         else
@@ -19,7 +25,17 @@ public class MessageBox : MonoBehaviour
             triggerObject.SetActive(true);
         }
 
-        if (triggerObject.name == "firework") GameObject.Find("power").GetComponent<player_ani>().issEnd();
+        if (triggerObject.name == "firework")
+        {
+            GameObject.Find("power").GetComponent<player_ani>().issEnd();
+            bool achieved;
+            SteamUserStats.GetAchievement("BreakingFuse", out achieved);
+            if (!achieved)
+            {
+                SteamUserStats.SetAchievement("BreakingFuse");
+                SteamUserStats.StoreStats();
+            }
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
