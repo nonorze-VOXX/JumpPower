@@ -81,9 +81,7 @@ namespace Player.Camera
                 {
                     if (Math.Abs(gta.Angle % 360 - transform.rotation.eulerAngles.z % 360) > 0.1)
                     {
-                        var trash = 1.0f;
                         var speed = cameraData.spinSpeed;
-                        // var newAngle = Mathf.SmoothDamp(transform.rotation.eulerAngles.z, gta.Angle, ref trash, speed);
                         var targetAngle = Quaternion.Euler(0, 0, gta.Angle);
                         var newAngle = Quaternion.Slerp(_pastQuaternion, targetAngle, _spinCounter);
                         _spinCounter += Time.deltaTime;
