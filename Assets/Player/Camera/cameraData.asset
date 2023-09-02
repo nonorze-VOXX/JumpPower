@@ -42,3 +42,4 @@ MonoBehaviour:
   cameraPosition: {x: 35.735, y: 15.315001, z: -10}
   isCameraSpin: 1
   CameraStatus: 1
+  spinSpeed: 0.03
