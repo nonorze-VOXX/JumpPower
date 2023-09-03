@@ -41,6 +41,7 @@ namespace Player.save
         public void SetSavePosition(Vector2 position)
         {
             _saveData.position = position;
+            playerData.savedPosition = position;
             SaveManager.Save(_saveData, savePath);
         }
 
