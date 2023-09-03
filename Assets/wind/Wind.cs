@@ -37,9 +37,12 @@ namespace wind
             if (other.transform.CompareTag("Player"))
             {
                 var direction = new Vector2(
-                    Mathf.Sin(transform.rotation.z),
-                    Mathf.Cos(transform.rotation.z));
-                other.gameObject.GetComponent<Rigidbody2D>().AddForce(direction * 100);
+                    Mathf.Cos(transform.rotation.z),
+                    Mathf.Sin(transform.rotation.z));
+                var rigibody = other.gameObject.GetComponent<Rigidbody2D>();
+                // print(_speed - rigibody.velocity.magnitude);
+                print(direction);
+                rigibody.AddForce(direction * Mathf.Abs(_speed - rigibody.velocity.magnitude) * 10);
             }
         }
 
