@@ -9,22 +9,17 @@ namespace Player.Camera
         public CameraData cameraData;
         public PlayerData playerData;
         public GameObject player;
-        private Vector2 _pastGravity;
         private Quaternion _pastQuaternion;
         private float _spinCounter;
         private bool _spining;
-        private Dictionary<Vector2, float> gravityToDir;
-        private Vector3 spinDirection;
+
+        private Dictionary<Vector2, float> gravityToDir = new()
+            { { Vector2.down, 0 }, { Vector2.up, 180 }, { Vector2.right, 90 }, { Vector2.left, 270 } };
 
         private void Start()
         {
             cameraData.CameraStatus = CameraStatus.Normal;
-            gravityToDir = new Dictionary<Vector2, float>();
-            gravityToDir.Add(Vector2.down, 0);
-            gravityToDir.Add(Vector2.up, 180);
-            gravityToDir.Add(Vector2.right, 90);
-            gravityToDir.Add(Vector2.left, 270);
-            _pastGravity = playerData.gravityDirection;
+            _pastQuaternion = Quaternion.Euler(0, 0, gravityToDir[playerData.gravityDirection]);
             _spining = false;
             if (cameraData.isCameraSpin)
                 transform.rotation = Quaternion.Euler(0, 0, gravityToDir[playerData.gravityDirection]);
@@ -69,7 +64,7 @@ namespace Player.Camera
             }
             else
             {
-                _pastGravity = playerData.gravityDirection;
+                _pastQuaternion = Quaternion.Euler(0, 0, gravityToDir[playerData.gravityDirection]);
                 _spining = false;
                 player.GetComponent<PlayerPower>().Pause();
             }
@@ -77,13 +72,9 @@ namespace Player.Camera
 
         private void SpinCameraTrigger()
         {
-            if (playerData.gravityDirection != _pastGravity)
+            if (Quaternion.Euler(0, 0, gravityToDir[playerData.gravityDirection]) != _pastQuaternion)
             {
                 _spining = true;
-                spinDirection = Vector3.Cross(_pastGravity, playerData.gravityDirection);
-
-                // if player from left Gravity to right Gravity need this if
-                if (spinDirection.z == 0) spinDirection.z = 1;
                 player.GetComponent<PlayerPower>().Pause();
                 _pastQuaternion = transform.rotation;
                 _spinCounter = 0;
