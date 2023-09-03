@@ -4,49 +4,25 @@ using UnityEngine;
 
 namespace Player.Camera
 {
-    internal struct GravityToAngle
-    {
-        public Vector2 Dir;
-        public float Angle;
-    }
-
     public class CameraManager : MonoBehaviour
     {
         public CameraData cameraData;
         public PlayerData playerData;
         public GameObject player;
-        private readonly List<GravityToAngle> _gravityToAngle = new();
-        private Vector2 _pastGravity;
         private Quaternion _pastQuaternion;
         private float _spinCounter;
         private bool _spining;
-        private Vector3 spinDirection;
+
+        private Dictionary<Vector2, float> gravityToDir = new()
+            { { Vector2.down, 0 }, { Vector2.up, 180 }, { Vector2.right, 90 }, { Vector2.left, 270 } };
 
         private void Start()
         {
             cameraData.CameraStatus = CameraStatus.Normal;
-            _pastGravity = playerData.gravityDirection;
-            GravityToAngle gravityToAngle;
-            gravityToAngle.Angle = 0;
-            gravityToAngle.Dir = Vector2.down;
-            _gravityToAngle.Add(gravityToAngle);
-            gravityToAngle.Angle = 90;
-            gravityToAngle.Dir = Vector2.right;
-            _gravityToAngle.Add(gravityToAngle);
-            gravityToAngle.Angle = 180;
-            gravityToAngle.Dir = Vector2.up;
-            _gravityToAngle.Add(gravityToAngle);
-            gravityToAngle.Angle = 270;
-            gravityToAngle.Dir = Vector2.left;
-            _gravityToAngle.Add(gravityToAngle);
+            _pastQuaternion = Quaternion.Euler(0, 0, gravityToDir[playerData.gravityDirection]);
             _spining = false;
             if (cameraData.isCameraSpin)
-                foreach (var gta in _gravityToAngle)
-                    if (gta.Dir == playerData.gravityDirection)
-                        // Debug.Log(gta.Dir);
-                        // Debug.Log(playerData.gravityDirection);
-                        // Debug.Log(gta.Angle);
-                        transform.rotation = Quaternion.Euler(0, 0, gta.Angle);
+                transform.rotation = Quaternion.Euler(0, 0, gravityToDir[playerData.gravityDirection]);
         }
 
         private void Update()
@@ -76,41 +52,33 @@ namespace Player.Camera
 
         private void SpinCamera()
         {
-            foreach (var gta in _gravityToAngle)
-                if (gta.Dir == playerData.gravityDirection)
-                {
-                    if (Math.Abs(gta.Angle % 360 - transform.rotation.eulerAngles.z % 360) > 0.1)
-                    {
-                        var speed = cameraData.spinSpeed;
-                        var targetAngle = Quaternion.Euler(0, 0, gta.Angle);
-                        var newAngle = Quaternion.Slerp(_pastQuaternion, targetAngle, _spinCounter);
-                        _spinCounter += Time.deltaTime;
-                        if (Mathf.Abs(newAngle.eulerAngles.z - gta.Angle) < 2) newAngle = targetAngle;
-                        transform.rotation = newAngle;
-                    }
-                    else
-                    {
-                        _spining = false;
-                        player.GetComponent<PlayerPower>().Pause();
-                    }
-                }
+            var gta = gravityToDir[playerData.gravityDirection];
+            if (Math.Abs(gta % 360 - transform.rotation.eulerAngles.z % 360) > 0.1)
+            {
+                var speed = cameraData.spinSpeed;
+                var targetAngle = Quaternion.Euler(0, 0, gta);
+                var newAngle = Quaternion.Slerp(_pastQuaternion, targetAngle, _spinCounter);
+                _spinCounter += Time.deltaTime;
+                if (Mathf.Abs(newAngle.eulerAngles.z - gta) < 2) newAngle = targetAngle;
+                transform.rotation = newAngle;
+            }
+            else
+            {
+                _pastQuaternion = Quaternion.Euler(0, 0, gravityToDir[playerData.gravityDirection]);
+                _spining = false;
+                player.GetComponent<PlayerPower>().Pause();
+            }
         }
 
         private void SpinCameraTrigger()
         {
-            if (playerData.gravityDirection != _pastGravity)
+            if (Quaternion.Euler(0, 0, gravityToDir[playerData.gravityDirection]) != _pastQuaternion)
             {
                 _spining = true;
-                spinDirection = Vector3.Cross(_pastGravity, playerData.gravityDirection);
-
-                // if player from left Gravity to right Gravity need this if
-                if (spinDirection.z == 0) spinDirection.z = 1;
                 player.GetComponent<PlayerPower>().Pause();
                 _pastQuaternion = transform.rotation;
                 _spinCounter = 0;
             }
-
-            _pastGravity = playerData.gravityDirection;
         }
     }
 }
