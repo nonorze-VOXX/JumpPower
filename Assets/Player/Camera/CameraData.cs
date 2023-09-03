@@ -17,5 +17,6 @@ namespace Player.Camera
         public Vector3 cameraPosition;
         public bool isCameraSpin;
         public CameraStatus CameraStatus;
+        public float spinSpeed;
     }
 }

@@ -10,6 +10,8 @@ namespace Player.Camera
         public PlayerData playerData;
         public GameObject player;
         private Vector2 _pastGravity;
+        private Quaternion _pastQuaternion;
+        private float _spinCounter;
         private bool _spining;
         private Dictionary<Vector2, float> gravityToDir;
         private Vector3 spinDirection;
@@ -58,9 +60,12 @@ namespace Player.Camera
             var gta = gravityToDir[playerData.gravityDirection];
             if (Math.Abs(gta % 360 - transform.rotation.eulerAngles.z % 360) > 0.1)
             {
-                var rotation = transform.rotation;
-                rotation = Quaternion.Euler(0, 0, rotation.eulerAngles.z + spinDirection.z);
-                transform.rotation = rotation;
+                var speed = cameraData.spinSpeed;
+                var targetAngle = Quaternion.Euler(0, 0, gta);
+                var newAngle = Quaternion.Slerp(_pastQuaternion, targetAngle, _spinCounter);
+                _spinCounter += Time.deltaTime;
+                if (Mathf.Abs(newAngle.eulerAngles.z - gta) < 2) newAngle = targetAngle;
+                transform.rotation = newAngle;
             }
             else
             {
@@ -80,6 +85,8 @@ namespace Player.Camera
                 // if player from left Gravity to right Gravity need this if
                 if (spinDirection.z == 0) spinDirection.z = 1;
                 player.GetComponent<PlayerPower>().Pause();
+                _pastQuaternion = transform.rotation;
+                _spinCounter = 0;
             }
         }
     }

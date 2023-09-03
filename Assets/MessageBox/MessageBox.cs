@@ -6,7 +6,10 @@ public class MessageBox : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        triggerObject.SetActive(true);
+        if (triggerObject.name == "HiddenWall")
+            triggerObject.SetActive(false);
+        else
+            triggerObject.SetActive(true);
         if (triggerObject.name == "firework") GameObject.Find("power").GetComponent<player_ani>().issEnd();
     }
 
@@ -14,5 +17,4 @@ public class MessageBox : MonoBehaviour
     {
         if (triggerObject.name != "firework") triggerObject.SetActive(false);
     }
-
 }
