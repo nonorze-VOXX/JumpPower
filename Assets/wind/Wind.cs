@@ -1,5 +1,4 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace wind
 {
@@ -22,12 +21,11 @@ namespace wind
             _collider2D.offset = _colliderSize / 2 * Vector2.right;
             _collider2D.size = _colliderSize;
             var main = _particleSystem.main;
-            main.startLifetime = (_colliderSize * Vector2.right).normalized.magnitude / _speed;
+            main.startLifetime = (_colliderSize.x * Vector2.right).magnitude / _speed;
             var velocityOverLifetime = _particleSystem.velocityOverLifetime;
             SetParticleVelocity(velocityOverLifetime, Vector2.right, _speed);
             var shape = _particleSystem.shape;
-            shape.scale = _colliderSize - _colliderSize / 2 * Vector2.right.Abs();
-            shape.position = _colliderSize / 4 * Vector2.right;
+            shape.scale = new Vector3(0, _colliderSize.y, 0);
         }
 
 
@@ -37,12 +35,12 @@ namespace wind
             if (other.transform.CompareTag("Player"))
             {
                 var direction = new Vector2(
-                    Mathf.Cos(transform.rotation.z),
-                    Mathf.Sin(transform.rotation.z));
+                    Mathf.Cos(transform.rotation.eulerAngles.z / 180 * Mathf.PI),
+                    Mathf.Sin(transform.rotation.eulerAngles.z / 180 * Mathf.PI));
                 var rigibody = other.gameObject.GetComponent<Rigidbody2D>();
-                // print(_speed - rigibody.velocity.magnitude);
-                print(direction);
-                rigibody.AddForce(direction * Mathf.Abs(_speed - rigibody.velocity.magnitude) * 10);
+                var maxForce = rigibody.velocity.magnitude > 10 ? Vector2.zero : direction * Mathf.Abs(_speed) * 30;
+                var nowForce = direction * Mathf.Abs(_speed - rigibody.velocity.magnitude) * 30;
+                rigibody.AddForce(nowForce.magnitude > maxForce.magnitude ? maxForce : nowForce);
             }
         }
 
