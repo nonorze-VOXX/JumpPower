@@ -1,6 +1,5 @@
 using Player;
 using Player.Camera;
-using Player.save;
 using UnityEngine;
 
 public class player_ani : MonoBehaviour
@@ -34,10 +33,10 @@ public class player_ani : MonoBehaviour
     {
         if (playerData.isEnd == false)
         {
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q))
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.E))
                 if (playerSR.flipX == false && playerData.status != Status.Jumping)
                     playerSR.flipX = true;
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.E))
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q))
                 if (playerSR.flipX && playerData.status != Status.Jumping)
                     playerSR.flipX = false;
 

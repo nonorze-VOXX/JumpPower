@@ -62,14 +62,14 @@ public class ForceLocal : MonoBehaviour
 
         if (playerData.freeAngle)
         {
-            if (Input.GetKey("a") && playerData.angle < _gravityAngleMax) playerData.angle += angleSpeed;
-            if (Input.GetKey("d") && playerData.angle > _gravityAngleMin) playerData.angle -= angleSpeed;
+            if (Input.GetKey("d") && playerData.angle < _gravityAngleMax) playerData.angle += angleSpeed;
+            if (Input.GetKey("a") && playerData.angle > _gravityAngleMin) playerData.angle -= angleSpeed;
         }
         else
         {
-            if (Input.GetKey("a"))
+            if (Input.GetKey("d"))
                 playerData.angle = playerData.nowGravityAngleLockA;
-            else if (Input.GetKey("d"))
+            else if (Input.GetKey("a"))
                 playerData.angle = playerData.nowGravityAngleLockD;
             else
                 playerData.angle = playerData.nowGravityAngleLockNull;
