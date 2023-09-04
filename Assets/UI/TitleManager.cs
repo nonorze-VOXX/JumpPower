@@ -28,7 +28,7 @@ public class TitleManager : MonoBehaviour
     {
         playerData.gravityDirection = Vector2.down;
         playerData.savedPosition = playerData.playerInitPosition;
-        var jumpPowerSaver = new JumpPowerSaver();
+        var jumpPowerSaver = new JumpPowerSaver(playerData);
         jumpPowerSaver.SetSavePosition(playerData.playerInitPosition);
         SceneManager.LoadScene("JumpPower");
     }
