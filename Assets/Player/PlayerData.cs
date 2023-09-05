@@ -50,5 +50,6 @@ namespace Player
         // public Status cameraSpinStatus;
         public Vector2 savedPosition;
         public float angleSpeed;
+        public bool controlReverse;
     }
 }
