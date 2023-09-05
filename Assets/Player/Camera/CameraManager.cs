@@ -13,8 +13,10 @@ namespace Player.Camera
         private float _spinCounter;
         private bool _spining;
 
-        private Dictionary<Vector2, float> gravityToDir = new()
-            { { Vector2.down, 0 }, { Vector2.up, 180 }, { Vector2.right, 90 }, { Vector2.left, 270 } };
+        private readonly Dictionary<Vector2, float> gravityToDir = new()
+        {
+            { Vector2.zero, 0 }, { Vector2.down, 0 }, { Vector2.up, 180 }, { Vector2.right, 90 }, { Vector2.left, 270 }
+        };
 
         private void Start()
         {

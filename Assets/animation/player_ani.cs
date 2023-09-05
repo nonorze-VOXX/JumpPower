@@ -33,12 +33,17 @@ public class player_ani : MonoBehaviour
     {
         if (playerData.isEnd == false)
         {
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.Q))
-                if (playerData.status != Status.Jumping)
+            if (playerData.status != Status.Jumping)
+            {
+                if (Input.GetKey(KeyCode.D))
                     playerSR.flipX = playerData.controlReverse;
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.E))
-                if (playerData.status != Status.Jumping)
+                if (Input.GetKey(KeyCode.A))
                     playerSR.flipX = !playerData.controlReverse;
+                if (Input.GetKey(KeyCode.E))
+                    playerSR.flipX = false;
+                if (Input.GetKey(KeyCode.Q))
+                    playerSR.flipX = true;
+            }
 
             if (playerData.status == Status.Jumping)
             {
