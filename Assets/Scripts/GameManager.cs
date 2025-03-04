@@ -9,13 +9,13 @@ namespace DefaultNamespace
         private readonly UnityBridge<Button> cameraSpinBtn = new("Canvas/CameraSpinButton");
         private readonly UnityBridge<Scrollbar> volumnBar = new("Canvas/VolumnBar");
         private CameraData cameraData;
+        private GravityManager gravityManager;
 
         private void Awake()
         {
             cameraData = Resources.Load<CameraData>("Data/CameraData");
-            var ins = cameraSpinBtn.GetInstance();
-            ins.onClick.RemoveAllListeners();
-            ins.onClick.AddListener(ToggleCameraSpin);
+            gravityManager = new GravityManager(new Vector2());
+            CameraSpinButtonInit();
 
             var volume = volumnBar.GetInstance();
             volume.onValueChanged.RemoveAllListeners();
@@ -31,11 +31,42 @@ namespace DefaultNamespace
         {
         }
 
-        private void ToggleCameraSpin()
+        private void CameraSpinButtonInit()
         {
-            var v = new UnityBridge<GameObject>("Canvas/CameraSpinButton/v").GetInstance();
-            v.SetActive(!v.activeSelf);
-            cameraData.isCameraSpin = v.activeSelf;
+            var ins = cameraSpinBtn.GetInstance();
+            ins.onClick.RemoveAllListeners();
+            ins.onClick.AddListener(() =>
+
+            {
+                var v = new UnityBridge<GameObject>("Canvas/CameraSpinButton/v").GetInstance();
+                v.SetActive(!v.activeSelf);
+                cameraData.isCameraSpin = v.activeSelf;
+            });
+        }
+    }
+
+    internal class GravityManager
+    {
+        public GravityManager(Vector2 initGravity)
+        {
+            SetGravity(initGravity);
+        }
+
+        public void SetGravity(Vector2 gravity)
+        {
+            Physics2D.gravity = gravity;
+        }
+
+        public void SetGravityDir(Vector2 dir)
+        {
+            var length = Physics2D.gravity.magnitude;
+            Physics2D.gravity = dir.normalized * length;
+        }
+
+        public void SetGravityLength(Vector2 length)
+        {
+            var dir = Physics2D.gravity.normalized;
+            Physics2D.gravity = dir * length.magnitude;
         }
     }
 }
