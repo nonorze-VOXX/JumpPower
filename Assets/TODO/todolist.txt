@@ -1,2 +1,0 @@
-a fan will push player to  a range
-check needCheck branch
