@@ -5,13 +5,27 @@
 //
 // Version: 1.0.13
 
-#if !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX) || UNITY_EDITOR
-#define DISABLESTEAMWORKS
 
+// #define RELEASE
+
+#if RELEASE
+#if !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
+// || UNITY_EDITOR
+#define DISABLESTEAMWORKS
+#endif
+
+using System;
+using System.Text;
+using AOT;
 using UnityEngine;
 #if !DISABLESTEAMWORKS
 using Steamworks;
 #endif
+#endif
+
+#if !RELEASE
+#define DISABLESTEAMWORKS
+using UnityEngine;
 #endif
 
 //
